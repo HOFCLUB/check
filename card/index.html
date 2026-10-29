@@ -1,0 +1,176 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="robots" content="noindex, nofollow">
+<title>HOF Member Card</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@600;800;900&family=Barlow:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+  html,body{margin:0;background:#000;color:#fff;font-family:Barlow,Arial,sans-serif}
+  main{max-width:760px;margin:0 auto;padding:24px 16px 48px;display:flex;flex-direction:column;gap:20px}
+  .card{width:100%;aspect-ratio:1012/638;container-type:inline-size;border-radius:3.2cqw;overflow:hidden}
+  .card *{--u:calc(100cqw / 1012)}
+  .face{position:relative;width:100%;height:100%;box-sizing:border-box;background:#0B0B0B;display:flex}
+  .front{flex-direction:column;justify-content:space-between;padding:calc(52*var(--u)) calc(56*var(--u)) calc(44*var(--u))}
+  .row{display:flex;justify-content:space-between;align-items:center}
+  .brand{display:flex;align-items:center;gap:calc(14*var(--u))}
+  .brand img{width:calc(40*var(--u));height:calc(54*var(--u));object-fit:contain}
+  .hof{font-family:Montserrat,Arial,sans-serif;font-weight:800;font-size:calc(20*var(--u));letter-spacing:calc(4*var(--u))}
+  .club{font-size:calc(13*var(--u));letter-spacing:calc(5*var(--u));color:#E8382A;font-weight:600;margin-top:calc(2*var(--u))}
+  .label{font-size:calc(13*var(--u));letter-spacing:calc(4*var(--u));color:#8A8A8A;font-weight:500}
+  .mid{display:flex;align-items:center;gap:calc(44*var(--u))}
+  .photo{width:calc(220*var(--u));height:calc(270*var(--u));border-radius:calc(18*var(--u));border:calc(3*var(--u)) solid #E8382A;background:#1A1A1A;object-fit:cover;flex-shrink:0;box-sizing:border-box}
+  .info{display:flex;flex-direction:column;gap:calc(14*var(--u));min-width:0}
+  .small{font-size:calc(14*var(--u));letter-spacing:calc(4*var(--u));color:#8A8A8A;font-weight:500}
+  .name{font-family:Montserrat,Arial,sans-serif;font-weight:800;font-size:calc(76*var(--u));line-height:.95;letter-spacing:calc(-1*var(--u));text-transform:uppercase;overflow-wrap:anywhere}
+  .num{font-family:Montserrat,Arial,sans-serif;font-weight:600;font-size:calc(30*var(--u));color:#C9CED6;letter-spacing:calc(2*var(--u))}
+  .badge{display:inline-block;margin-top:calc(6*var(--u));padding:calc(8*var(--u)) calc(16*var(--u));border:calc(1.5*var(--u)) solid #E8382A;color:#E8382A;font-size:calc(15*var(--u));letter-spacing:calc(3*var(--u));font-weight:600;align-self:flex-start}
+  .foot{border-top:1px solid #2A2A2A;padding-top:calc(20*var(--u))}
+  .foot div{font-size:calc(14*var(--u));letter-spacing:calc(6*var(--u));color:#8A8A8A;font-weight:500}
+  .foot div+div{font-size:calc(13*var(--u));letter-spacing:calc(3*var(--u))}
+  /* Team */
+  .team .photo{border-color:#E8382A}
+  .team .badge{border-color:#C9CED6;color:#C9CED6}
+  /* Founding */
+  .founding{background:#080808;padding:calc(14*var(--u))}
+  .frame{position:relative;flex:1;box-sizing:border-box;border:calc(1.5*var(--u)) solid #9AA3AB;border-radius:calc(22*var(--u));padding:calc(30*var(--u)) calc(40*var(--u)) calc(28*var(--u));display:flex;flex-direction:column;justify-content:space-between;overflow:hidden}
+  .ghost{position:absolute;right:calc(28*var(--u));top:calc(120*var(--u));font-family:Montserrat,Arial,sans-serif;font-weight:900;font-size:calc(300*var(--u));line-height:1;color:transparent;-webkit-text-stroke:calc(2*var(--u)) #3A3F45;letter-spacing:calc(-8*var(--u))}
+  .founding .row,.founding .mid,.founding .foot{position:relative}
+  .wordmark{height:calc(110*var(--u));mix-blend-mode:lighten}
+  .founding .club{text-align:right}
+  .founding .photo{width:calc(210*var(--u));height:calc(258*var(--u));border-color:#C9CED6}
+  .founding .name{font-size:calc(72*var(--u))}
+  .nums{display:flex;align-items:baseline;gap:calc(18*var(--u))}
+  .fnum{font-family:Montserrat,Arial,sans-serif;font-weight:800;font-size:calc(28*var(--u));letter-spacing:calc(2*var(--u))}
+  .founding .num{font-size:calc(28*var(--u))}
+  .solid{display:inline-block;margin-top:calc(6*var(--u));padding:calc(8*var(--u)) calc(16*var(--u));background:#C9CED6;color:#0B0B0B;font-size:calc(15*var(--u));letter-spacing:calc(3*var(--u));font-weight:600;align-self:flex-start}
+  /* Back */
+  .back{align-items:center;gap:calc(56*var(--u));padding:calc(52*var(--u)) calc(56*var(--u)) calc(44*var(--u))}
+  .back .flame{position:absolute;top:calc(44*var(--u));right:calc(56*var(--u));width:calc(42*var(--u));height:calc(56*var(--u));object-fit:contain}
+  .qr{width:calc(300*var(--u));height:calc(300*var(--u));background:#fff;border-radius:calc(18*var(--u));padding:calc(10*var(--u));box-sizing:border-box;flex-shrink:0}
+  .qr img{width:100%;height:100%;display:block}
+  .copy{display:flex;flex-direction:column;gap:calc(16*var(--u));min-width:0}
+  .headline{font-family:Montserrat,Arial,sans-serif;font-weight:800;font-size:calc(40*var(--u));line-height:1.05}
+  .body{font-size:calc(18*var(--u));line-height:1.5;color:#C9CED6;max-width:calc(480*var(--u))}
+  .meta{display:flex;flex-direction:column;gap:calc(6*var(--u));margin-top:calc(6*var(--u))}
+  .meta div{font-size:calc(15*var(--u));letter-spacing:calc(2*var(--u));color:#8A8A8A}
+  .rule{width:calc(40*var(--u));height:calc(2*var(--u));background:#E8382A;margin-top:calc(4*var(--u))}
+  .note{color:#8A8A8A;font-size:14px;line-height:1.6;text-align:center}
+  .note a{color:#C9CED6}
+  .msg{text-align:center;padding:60px 16px;color:#C9CED6;font-size:16px}
+  .msg b{display:block;color:#fff;font-size:22px;letter-spacing:2px;margin-bottom:8px}
+  [hidden]{display:none!important}
+</style>
+</head>
+<body>
+<main>
+  <div class="msg" id="msg"><b>LOADING</b>One moment...</div>
+
+  <div class="card" id="cardFront" hidden>
+    <div class="face front" id="std">
+      <div class="row">
+        <div class="brand">
+          <img src="../assets/flame-white.png" alt="">
+          <div><div class="hof">HEART OF FIRE</div><div class="club">RUN CLUB</div></div>
+        </div>
+        <div class="label" id="cardLabel">MEMBER CARD</div>
+      </div>
+      <div class="mid">
+        <img class="photo" id="photo" alt="" src="data:image/gif;base64,R0lGODlhAQABAAAAACH5BAEKAAEALAAAAAABAAEAAAICTAEAOw==">
+        <div class="info">
+          <div class="small" id="nameLabel">MEMBER</div>
+          <div class="name" id="name"></div>
+          <div class="num" id="num"></div>
+          <div class="badge" id="badge"></div>
+        </div>
+      </div>
+      <div class="row foot"><div>BELIEVE · BEGIN · BURN · BECOME</div><div>POWERED BY ESCAPAID</div></div>
+    </div>
+
+    <div class="face founding" id="fnd" hidden>
+      <div class="frame">
+        <div class="ghost" id="ghost"></div>
+        <div class="row">
+          <img class="wordmark" src="../assets/wordmark-chrome.png" alt="Heart of Fire">
+          <div><div class="club">RUN CLUB</div><div class="label" style="text-align:right;color:#C9CED6">FOUNDING 20</div></div>
+        </div>
+        <div class="mid">
+          <img class="photo" id="fPhoto" alt="" src="data:image/gif;base64,R0lGODlhAQABAAAAACH5BAEKAAEALAAAAAABAAEAAAICTAEAOw==">
+          <div class="info">
+            <div class="small" style="color:#C9CED6">FOUNDING MEMBER</div>
+            <div class="name" id="fName"></div>
+            <div class="nums"><div class="num" id="fNum"></div><div class="fnum" id="fFounding"></div></div>
+            <div class="solid">ONE OF TWENTY</div>
+          </div>
+        </div>
+        <div class="row foot"><div>BELIEVE · BEGIN · BURN · BECOME</div><div>POWERED BY ESCAPAID</div></div>
+      </div>
+    </div>
+  </div>
+
+  <div class="card" id="cardBack" hidden>
+    <div class="face back">
+      <img class="flame" src="../assets/flame-white.png" alt="">
+      <div class="qr"><img id="qr" alt="Member QR code"></div>
+      <div class="copy">
+        <div class="headline">Scan at every session.</div>
+        <div class="body">This card is personal to its holder. The team scans it to check your membership is active.</div>
+        <div class="meta"><div>HEART OF FIRE · TRINIDAD AND TOBAGO</div><div>@HOFCLUB.OFFICIAL</div></div>
+        <div class="rule"></div>
+      </div>
+    </div>
+  </div>
+
+  <p class="note" id="note" hidden>Save your card with a screenshot. Show the back at every session.<br><a id="statusLink" href="#">Check my membership status</a></p>
+</main>
+
+<script>
+  // The HOF script's Web app URL (the /exec link). Only change this if the deployment link ever changes.
+  var API_URL = 'https://script.google.com/macros/s/AKfycbzHBD01gUyM6oNEaT3wwxbyH5_n4590y8AdHduJ-TRCKZXuKxFt-5qaOXFMQ6krSAFNVQ/exec';
+  var CHECK_PAGE = 'https://hofclub.github.io/check/';
+
+  function $(id) { return document.getElementById(id); }
+  function fail(title, text) { $('msg').innerHTML = ''; var b = document.createElement('b'); b.textContent = title; $('msg').appendChild(b); $('msg').appendChild(document.createTextNode(text)); }
+
+  var id = new URLSearchParams(location.search).get('id') || '';
+  if (!id) {
+    fail('CARD NOT FOUND', 'This link is missing its member code. Please use the link from your welcome message.');
+  } else {
+    fetch(API_URL + '?format=json&id=' + encodeURIComponent(id), { credentials: 'omit' })
+      .then(function (r) { return r.json(); })
+      .then(function (d) {
+        if (!d || !d.found) { fail('CARD NOT FOUND', 'We couldn\'t find this card. Please check with the HOF team.'); return; }
+        var type = String(d.type || 'MEMBER');
+        var first = String(d.first || '');
+        var num = String(d.num || '');
+        if (type === 'FOUNDING') {
+          $('std').hidden = true; $('fnd').hidden = false;
+          var f = String(d.founding || '').replace(/^#/, '');
+          $('ghost').textContent = f;
+          $('fName').textContent = first;
+          $('fNum').textContent = num;
+          $('fFounding').textContent = f ? 'FOUNDING #' + f : 'FOUNDING';
+          if (d.photo) { $('fPhoto').src = d.photo; $('fPhoto').alt = 'Member photo'; }
+        } else {
+          var team = (type === 'VOLUNTEER' || type === 'EXEC');
+          if (team) $('std').classList.add('team');
+          $('cardLabel').textContent = team ? 'TEAM CARD' : 'MEMBER CARD';
+          $('nameLabel').textContent = team ? 'TEAM' : 'MEMBER';
+          $('badge').textContent = type === 'VOLUNTEER' ? 'TEAM · VOLUNTEER' : type === 'EXEC' ? 'TEAM · EXEC' : 'MEMBER';
+          $('name').textContent = first;
+          $('num').textContent = num;
+          if (d.photo) { $('photo').src = d.photo; $('photo').alt = 'Member photo'; }
+        }
+        var check = CHECK_PAGE + '?id=' + encodeURIComponent(id);
+        $('qr').src = 'https://api.qrserver.com/v1/create-qr-code/?size=400x400&margin=12&data=' + encodeURIComponent(check);
+        $('statusLink').href = check;
+        $('msg').hidden = true;
+        $('cardFront').hidden = false; $('cardBack').hidden = false; $('note').hidden = false;
+      })
+      .catch(function () { fail('TRY AGAIN', 'Couldn\'t load your card. Check your signal and refresh.'); });
+  }
+</script>
+</body>
+</html>
