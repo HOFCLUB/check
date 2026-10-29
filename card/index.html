@@ -162,7 +162,7 @@
           var team = (type === 'VOLUNTEER' || type === 'EXEC');
           var exec = (type === 'EXEC');
           if (team) $('std').classList.add(exec ? 'exec' : 'team');
-          $('cardLabel').textContent = exec ? 'EXECUTIVE CARD' : team ? 'TEAM CARD' : 'MEMBER CARD';
+          $('cardLabel').textContent = exec ? 'EXECUTIVE CARD' : team ? 'VOLUNTEER CARD' : 'MEMBER CARD';
           $('nameLabel').textContent = team ? 'TEAM' : 'MEMBER';
           $('badge').textContent = type === 'VOLUNTEER' ? 'TEAM · VOLUNTEER' : exec ? 'TEAM · EXECUTIVE' : 'MEMBER';
           $('name').textContent = first;
