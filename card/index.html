@@ -33,6 +33,11 @@
   /* Team */
   .team .photo{border-color:#E8382A}
   .team .badge{border-color:#C9CED6;color:#C9CED6}
+  /* Executive */
+  .exec{box-shadow:inset 0 calc(5*var(--u)) 0 #FFFFFF}
+  .exec .photo{border-color:#FFFFFF}
+  .exec .label{color:#FFFFFF}
+  .exec .badge{background:#FFFFFF;border-color:#FFFFFF;color:#0B0B0B;font-weight:700}
   /* Founding */
   .founding{background:#080808;padding:calc(14*var(--u))}
   .frame{position:relative;flex:1;box-sizing:border-box;border:calc(1.5*var(--u)) solid #9AA3AB;border-radius:calc(22*var(--u));padding:calc(30*var(--u)) calc(40*var(--u)) calc(28*var(--u));display:flex;flex-direction:column;justify-content:space-between;overflow:hidden}
@@ -155,10 +160,11 @@
           if (d.photo) { $('fPhoto').src = d.photo; $('fPhoto').alt = 'Member photo'; }
         } else {
           var team = (type === 'VOLUNTEER' || type === 'EXEC');
-          if (team) $('std').classList.add('team');
-          $('cardLabel').textContent = team ? 'TEAM CARD' : 'MEMBER CARD';
+          var exec = (type === 'EXEC');
+          if (team) $('std').classList.add(exec ? 'exec' : 'team');
+          $('cardLabel').textContent = exec ? 'EXECUTIVE CARD' : team ? 'TEAM CARD' : 'MEMBER CARD';
           $('nameLabel').textContent = team ? 'TEAM' : 'MEMBER';
-          $('badge').textContent = type === 'VOLUNTEER' ? 'TEAM · VOLUNTEER' : type === 'EXEC' ? 'TEAM · EXEC' : 'MEMBER';
+          $('badge').textContent = type === 'VOLUNTEER' ? 'TEAM · VOLUNTEER' : exec ? 'TEAM · EXECUTIVE' : 'MEMBER';
           $('name').textContent = first;
           $('num').textContent = num;
           if (d.photo) { $('photo').src = d.photo; $('photo').alt = 'Member photo'; }
