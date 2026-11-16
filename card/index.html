@@ -63,6 +63,16 @@
   .sx-chips{display:flex;gap:8px 8px;flex-wrap:wrap;max-height:62px;overflow:hidden}.sx-chips .chip{font-size:9.5px;padding:5px 8px 5px 5px;letter-spacing:.06em}.sx-chips .chip svg{width:13px;height:13px}
   .sx-motto{margin-top:14px;font:500 9px Barlow,Arial,sans-serif;letter-spacing:.3em;color:var(--chrome);text-transform:uppercase}.sx-motto span{color:var(--red)}
   .shimg.v2.f45 .sx-bg{height:58%}.shimg.v2.f45 .sx-fade{background:linear-gradient(180deg,rgba(10,10,10,.55) 0%,rgba(10,10,10,0) 16%,rgba(10,10,10,.3) 38%,#0a0a0a 58%)}
+  .shimg.v2.lv-h{background:linear-gradient(150deg,#ff6a3d,#E8382A 22%,#C9CED6 48%,#ffffff 55%,#C9CED6 62%,#E8382A 85%,#8a0d06)}
+  .shimg.v2.lv-h>.sx-wrap{background:#0b0605}
+  .shimg.v2.lv-h .sx-fade{background:linear-gradient(180deg,rgba(11,6,5,.55) 0%,rgba(40,6,4,.05) 18%,rgba(60,8,5,.42) 44%,#0b0605 66%)}
+  .shimg.v2.lv-h .sx-tex{height:62%;background:radial-gradient(110% 60% at 50% 112%,rgba(232,56,42,.38),rgba(232,56,42,.08) 45%,transparent 70%)}
+  .sx-wm{position:absolute;right:-34px;bottom:70px;width:210px;opacity:.06;pointer-events:none}
+  .sx-frame2{position:absolute;inset:7px;border:1px solid rgba(232,56,42,.38);border-radius:12px;pointer-events:none}
+  .sx-hof{display:inline-flex;align-items:center;gap:6px;padding:4px 10px 4px 7px;border:1px solid rgba(232,56,42,.6);border-radius:20px;background:rgba(232,56,42,.14)}
+  .sx-hof b{font:800 10px Montserrat,Arial,sans-serif;letter-spacing:.2em;color:#fff;text-transform:uppercase}
+  .shimg.v2.lv-h .sx-motto{color:#e9d2cf}
+  .shimg.v2.lv-h .sx-bar b{background:linear-gradient(90deg,#E8382A,#ff6a3d,#ffd9c9)}
 </style>
 </head>
 <body>
@@ -310,12 +320,12 @@ function drawShare() {
   if (chg) stats.push(col('Change', chg, 'faster', 'go'));
   const pips = !hide && ri >= 0 ? `<span class="pips">${pipsHtml(r[0], r[1])}</span>` : '';
   const badges = s && s.month.length ? `<div class="sx-lab" style="margin-bottom:9px">This month</div><div class="sx-chips">${chips(s.month, OPT.f === '45' ? 7 : 5)}</div>` : '';
-  el.innerHTML = `<div class="sx-wrap"><div class="sx-bg" id="sxBg"></div><div class="sx-fade"></div><div class="sx-tex"></div>
+  el.innerHTML = `<div class="sx-wrap"><div class="sx-bg" id="sxBg"></div><div class="sx-fade"></div><div class="sx-tex"></div>${lk === 'h' ? `<img class="sx-wm" src="${FLAME}" alt=""><div class="sx-frame2"></div>` : ''}
    <div class="sx-in">
     <div class="sx-top"><div><div class="sx-club">HOF RUN CLUB</div><div class="sx-lab" style="margin-top:7px">${esc((s ? s.label : 'Before your first') + ' specs')}</div></div><img class="sx-logo" src="${FLAME}" alt=""></div>
     <div class="sx-gap"></div>
     ${OPT.name || OPT.num ? `<div class="sx-who">${OPT.name ? `<div class="sx-nm">${esc(CARD.first)}</div>` : '<span></span>'}${OPT.num ? `<div class="sx-no">${esc(CARD.num)}</div>` : ''}</div>` : ''}
-    ${rl ? `<div class="sx-rank"><span>${esc(rl)} · ${LADN[L]}</span>${pips}</div>` : `<div class="sx-rank"><span>${LADN[L]}</span></div>`}
+    ${lk === 'h' ? `<div class="sx-rank"><span class="sx-hof">${flameSvg(4, 13)}<b>Heart of Fire</b></span><span>${LADN[L]}</span></div>` : rl ? `<div class="sx-rank"><span>${esc(rl)} · ${LADN[L]}</span>${pips}</div>` : `<div class="sx-rank"><span>${LADN[L]}</span></div>`}
     ${wt}
     <div class="sx-stats">${stats.join('')}</div>
     <div class="sx-heat">${flameSvg(hi, 20)}<div style="flex:1"><div class="sx-hrow"><span class="sx-lv">${HEATLV[hi][0].toUpperCase()}</span><span class="sx-hn">${H} <small>HEAT</small></span></div>
