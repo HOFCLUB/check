@@ -51,7 +51,7 @@
     <details class="panel coll"><summary><h3>All badges</h3><span class="sm" id="badgeCount"></span></summary><div id="badges"></div><p class="hint">Badges come only from real logged data: sign-ins, benchmarks and official results.</p></details>
     <div class="panel priv"><div class="k">Background <small>Add your own photo behind your Specs and share image. It stays on this phone.</small></div><button class="ghostbtn" id="bgBtn">Add photo</button><input type="file" id="bgFile" accept="image/*" hidden></div>
     <div class="panel priv"><div class="k">Weight <span class="mont" id="wtNow" style="font-weight:800;color:#fff;margin-left:6px"></span><small>Private and kept only on this phone. It only shows on a share image if you turn it on.</small>
-      <div class="wtrow"><input class="fld" id="wtIn" inputmode="decimal" placeholder="kg" aria-label="Weight in kg"><button class="ghostbtn" id="wtSave">Save</button></div></div></div>
+      <div class="wtrow"><input class="fld" id="wtIn" inputmode="decimal" placeholder="kg" aria-label="Weight"><div class="togs" id="wtU" style="margin:0"><button class="tog on" data-u="kg">kg</button><button class="tog" data-u="lbs">lbs</button></div><button class="ghostbtn" id="wtSave">Save</button></div></div></div>
     <div><button class="btn" id="shareBtn">Share my specs</button>
       <div class="share" id="share">
         <div class="togs" id="fmt"><button class="tog on" data-f="916">Story 9:16</button><button class="tog" data-f="45">Post 4:5</button></div>
@@ -74,6 +74,9 @@ const OPT = { name: 1, num: 1, photo: 1, weight: 0, f: '916' };
 const MON = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
 const DOW = ['Sun','Mon','Tue','Wed','Thu','Fri','Sat'];
 const nice = ymd => { if (!ymd) return ''; const d = new Date(ymd + 'T12:00:00'); return DOW[d.getDay()] + ' ' + d.getDate() + ' ' + MON[d.getMonth()]; };
+const wtuKey = 'hofwtu_' + ID; const LB = 2.20462;
+const wU = () => store(wtuKey) === 'lbs' ? 'lbs' : 'kg';
+const wShow = kg => wU() === 'lbs' ? Math.round(kg * LB) : Math.round(kg * 10) / 10;
 const pinKey = 'hofpin_' + ID, ladKey = 'hoflad_' + ID, bgKey = 'hofbg_' + ID, wtKey = 'hofwt_' + ID;
 function fail(t, x) { $('msg').hidden = false; $('msg').innerHTML = '<b>' + esc(t) + '</b>' + esc(x); }
 
@@ -223,8 +226,9 @@ function teamUI() {
 function applyBg(el) { const bg = store(bgKey); el.classList.toggle('hasbg', !!bg); el.style.backgroundImage = bg ? `url(${bg})` : ''; let sc = el.querySelector(':scope>.scrim'); if (bg) { if (!sc) { sc = document.createElement('div'); sc.className = 'scrim'; el.prepend(sc); } } else if (sc) sc.remove(); }
 $('bgBtn').onclick = () => { if (store(bgKey)) { store(bgKey, null); $('bgBtn').textContent = 'Add photo'; render(); } else $('bgFile').click(); };
 $('bgFile').onchange = e => { const f = e.target.files[0]; if (!f) return; const img = new Image(); img.onload = () => { const c = document.createElement('canvas'); const sc = Math.min(1, 1080 / img.width); c.width = img.width * sc; c.height = img.height * sc; c.getContext('2d').drawImage(img, 0, 0, c.width, c.height); store(bgKey, c.toDataURL('image/jpeg', .8)); $('bgBtn').textContent = 'Remove photo'; render(); }; img.src = URL.createObjectURL(f); };
-function weightUI() { let w = []; try { w = JSON.parse(store(wtKey) || '[]'); } catch (e) {} $('wtNow').textContent = w.length ? w[w.length - 1][1] + ' kg' : ''; $('bgBtn').textContent = store(bgKey) ? 'Remove photo' : 'Add photo'; }
-$('wtSave').onclick = () => { const v = parseFloat($('wtIn').value); if (!(v > 25 && v < 300)) return; let w = []; try { w = JSON.parse(store(wtKey) || '[]'); } catch (e) {} w.push([new Date().toISOString().slice(0, 10), Math.round(v * 10) / 10]); store(wtKey, JSON.stringify(w.slice(-24))); $('wtIn').value = ''; weightUI(); drawShare(); };
+function weightUI() { let w = []; try { w = JSON.parse(store(wtKey) || '[]'); } catch (e) {} $('wtNow').textContent = w.length ? wShow(w[w.length - 1][1]) + ' ' + wU() : ''; $('wtIn').placeholder = wU(); document.querySelectorAll('#wtU .tog').forEach(x => x.classList.toggle('on', x.dataset.u === wU())); $('bgBtn').textContent = store(bgKey) ? 'Remove photo' : 'Add photo'; }
+document.querySelectorAll('#wtU .tog').forEach(b => b.onclick = () => { store(wtuKey, b.dataset.u); weightUI(); drawShare(); });
+$('wtSave').onclick = () => { let v = parseFloat($('wtIn').value); if (wU() === 'lbs') v = v / LB; if (!(v > 25 && v < 300)) return; let w = []; try { w = JSON.parse(store(wtKey) || '[]'); } catch (e) {} w.push([new Date().toISOString().slice(0, 10), Math.round(v * 10) / 10]); store(wtKey, JSON.stringify(w.slice(-24))); $('wtIn').value = ''; weightUI(); drawShare(); };
 function drawShare() {
   const s = SP.snap, L = LAD_SEL, ri = curRank(L), r = RANKS[Math.max(0, ri)], k = ri >= 0 ? r[0] : 'b', hide = SP.exec && SP.compete === 'OFF';
   const el = $('shimg'); el.classList.toggle('f45', OPT.f === '45');
@@ -232,7 +236,7 @@ function drawShare() {
   const who = (OPT.photo || OPT.name || OPT.num) ? `<div class="who">${OPT.photo && CARD.photo ? `<div class="ph"><img src="${esc(CARD.photo)}" alt="" style="width:100%;height:100%;object-fit:cover"></div>` : ''}<div>${OPT.name ? `<div class="nm t">${esc(CARD.first)}</div>` : ''}${OPT.num ? `<div class="no t">${esc(CARD.num)}</div>` : ''}${rl ? `<div class="lb t" style="margin-top:8px;color:#fff">${rl} · ${LADSHORT[L]}</div><div class="pips" style="margin-top:6px">${pipsHtml(r[0], r[1])}</div>` : ''}</div></div>` : (rl ? `<div><div class="lb t" style="color:#fff">${rl}</div><div class="pips" style="margin-top:6px">${pipsHtml(r[0], r[1])}</div></div>` : '');
   let w = []; try { w = JSON.parse(store(wtKey) || '[]'); } catch (e) {}
   const wd = w.length > 1 ? Math.round((w[w.length - 1][1] - w[0][1]) * 10) / 10 : 0;
-  const wt = OPT.weight && w.length ? `<div class="lb" style="margin-top:10px;letter-spacing:.14em">WEIGHT ${w[w.length - 1][1]} KG${wd < 0 ? ` · <span>${String(wd).replace('-', '−')} KG</span>` : ''}</div>` : '';
+  const wt = OPT.weight && w.length ? `<div class="lb" style="margin-top:10px;letter-spacing:.14em">WEIGHT ${wShow(w[w.length - 1][1])} ${wU().toUpperCase()}${wd < 0 ? ` · <span>${String(wShow(wd)).replace('-', '−')} ${wU().toUpperCase()}</span>` : ''}</div>` : '';
   const pb = s && s.newPbs.find(n => LAD_EV[L].indexOf(n.event) > -1);
   const hist = SP.hist[L] || [], last = hist[hist.length - 1], prev = hist[hist.length - 2];
   const chg = last && prev && last.b.event === prev.b.event && last.b.s < prev.b.s ? fmtDiff(last.b.s - prev.b.s, last.b.event) : '';
