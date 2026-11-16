@@ -52,7 +52,7 @@
   .sx-no{font:600 11px Montserrat,Arial,sans-serif;color:var(--chrome);letter-spacing:.12em;padding-bottom:3px}
   .sx-rank{display:flex;align-items:center;gap:10px;margin-top:9px;font:500 10px Barlow,Arial,sans-serif;letter-spacing:.16em;text-transform:uppercase;color:#fff}
   .sx-rank .pips{display:inline-flex;gap:3px;flex-shrink:0}.sx-rank .pips i{width:8px;margin:0}.sx-rank{flex-wrap:wrap;row-gap:7px}.sx-rank>span:first-child{white-space:nowrap}
-  .sx-wt{margin-top:7px;font:500 10px Barlow,Arial,sans-serif;letter-spacing:.2em;color:var(--chrome);text-transform:uppercase}.sx-wt b{color:var(--go)}
+  .sx-wt{white-space:nowrap;margin-top:7px;font:500 10px Barlow,Arial,sans-serif;letter-spacing:.2em;color:var(--chrome);text-transform:uppercase}.sx-wt b{color:var(--go)}
   .sx-stats{display:flex;margin-top:14px;padding-top:14px;border-top:1px solid rgba(255,255,255,.14)}
   .sx-col{flex:1;min-width:0}.sx-col+.sx-col{border-left:1px solid rgba(255,255,255,.14);padding-left:12px}
   .sx-val{font:900 26px Montserrat,Arial,sans-serif;line-height:1;margin-top:7px;white-space:nowrap}.sx-val.go{color:var(--go)}.sx-val.sm{font-size:19px;margin-top:11px}
@@ -103,7 +103,7 @@
     <div class="panel"><h3>History</h3><div id="chart"></div></div>
     <details class="panel coll" id="heatP"><summary><h3>Heat</h3><span class="sm" id="heatSm"></span></summary><div id="heatBody"></div></details>
     <details class="panel coll" id="rankHow"><summary><h3>How ranks work</h3><span class="sm">Your time standards</span></summary><div id="rankBody"></div></details>
-    <details class="panel coll"><summary><h3>All badges</h3><span class="sm" id="badgeCount"></span></summary><div id="badges"></div><p class="hint">Badges come only from real logged data: sign-ins, benchmarks and official results.</p></details>
+    <details class="panel coll"><summary><h3>All badges</h3><span class="sm" id="badgeCount"></span></summary><div id="badges"></div><p class="hint">Badges come only from real logged data: sign-ins, benchmarks and official results. Body badges come from the weights you log on this phone, stay private, and only show on a share image when Weight is on.</p></details>
     <div class="panel priv"><div class="k">Background <small>Add your own photo behind your Specs and share image. It stays on this phone.</small></div><button class="ghostbtn" id="bgBtn">Add photo</button><input type="file" id="bgFile" accept="image/*" hidden></div>
     <div class="panel priv"><div class="k">Weight <span class="mont" id="wtNow" style="font-weight:800;color:#fff;margin-left:6px"></span><small>Private and kept only on this phone. It only shows on a share image if you turn it on.</small>
       <div class="wtrow"><input class="fld" id="wtIn" inputmode="decimal" placeholder="kg" aria-label="Weight"><div class="togs" id="wtU" style="margin:0"><button class="tog on" data-u="kg">kg</button><button class="tog" data-u="lbs">lbs</button></div><button class="ghostbtn" id="wtSave">Save</button></div></div></div>
@@ -253,9 +253,9 @@ function render() {
   const sx = sexKey(SP.sex), evs2 = LAD_EV[L];
   $('rankBody').innerHTML = `<p class="hint" style="margin-top:0">${SP.sex ? (sx === 'W' ? "Women's" : "Men's") + ' standards' : 'Standards'} for ${LAD[L]}. Hit a time and the rank is yours on the 1st, as long as you reached Ember Heat that month.${L === 'middle' ? ' Beginners run 1.6 km, Intermediates 3 km, Advanced 5 km. A road 5K counts too.' : L === 'sprint' ? ' Your rank comes from your chosen event.' : ' Official results only.'}</p><div class="tw"><table class="tbl"><tr><th>Rank</th>${evs2.map(e => `<th>${e}</th>`).join('')}</tr>${RANKS.map((rr, i) => `<tr class="${i === ri ? 'me' : ''}"><td>${rr[2]}</td>${evs2.map(e => `<td>${i === 0 ? 'Start' : fmtT(SP_STD[sx][e][i], e)}</td>`).join('')}</tr>`).join('')}</table></div>`;
   // badges
-  const earned = s ? s.earned : {};
+  const earned = Object.assign({}, s ? s.earned : {}, wtEarned());
   $('badgeCount').textContent = Object.keys(earned).filter(b => ICON[b]).length + ' earned';
-  $('badges').innerHTML = CATS.filter(([c]) => (c !== 'Team' || team) && (c !== 'Leadership' || SP.exec)).map(([c, ks]) => `<div class="bcat">${c}</div><div class="badges">` + ks.map(b => { const e = earned[b]; return `<div class="bd ${e ? '' : 'lock'}"><span class="sh">${SHORT[b] || ''}</span><svg viewBox="0 0 34 34">${ICON[b] || ''}</svg><div class="n">${NAME[b] || b}</div><div class="m">${e ? 'Earned · ' + esc(/^\d{4}-\d{2}-\d{2}$/.test(e) ? nice(e) : e) : HOW[b] || ''}</div></div>`; }).join('') + '</div>').join('');
+  $('badges').innerHTML = CATS.concat([['Body · private', WTB]]).filter(([c]) => (c !== 'Team' || team) && (c !== 'Leadership' || SP.exec)).map(([c, ks]) => `<div class="bcat">${c}</div><div class="badges">` + ks.map(b => { const e = earned[b]; return `<div class="bd ${e ? '' : 'lock'}"><span class="sh">${SHORT[b] || ''}</span><svg viewBox="0 0 34 34">${ICON[b] || ''}</svg><div class="n">${NAME[b] || b}</div><div class="m">${e ? 'Earned · ' + esc(/^\d{4}-\d{2}-\d{2}$/.test(e) ? nice(e) : e) : HOW[b] || ''}</div></div>`; }).join('') + '</div>').join('');
   focusUI(); teamUI(); drawShare(); weightUI();
 }
 function focusUI() {
@@ -283,7 +283,7 @@ $('bgBtn').onclick = () => { if (store(bgKey)) { store(bgKey, null); $('bgBtn').
 $('bgFile').onchange = e => { const f = e.target.files[0]; if (!f) return; const img = new Image(); img.onload = () => { const c = document.createElement('canvas'); const sc = Math.min(1, 1080 / img.width); c.width = img.width * sc; c.height = img.height * sc; c.getContext('2d').drawImage(img, 0, 0, c.width, c.height); store(bgKey, c.toDataURL('image/jpeg', .8)); $('bgBtn').textContent = 'Remove photo'; render(); }; img.src = URL.createObjectURL(f); };
 function weightUI() { let w = []; try { w = JSON.parse(store(wtKey) || '[]'); } catch (e) {} $('wtNow').textContent = w.length ? wShow(w[w.length - 1][1]) + ' ' + wU() : ''; $('wtIn').placeholder = wU(); document.querySelectorAll('#wtU .tog').forEach(x => x.classList.toggle('on', x.dataset.u === wU())); $('bgBtn').textContent = store(bgKey) ? 'Remove photo' : 'Add photo'; }
 document.querySelectorAll('#wtU .tog').forEach(b => b.onclick = () => { store(wtuKey, b.dataset.u); weightUI(); drawShare(); });
-$('wtSave').onclick = () => { let v = parseFloat($('wtIn').value); if (wU() === 'lbs') v = v / LB; if (!(v > 25 && v < 300)) return; let w = []; try { w = JSON.parse(store(wtKey) || '[]'); } catch (e) {} w.push([new Date().toISOString().slice(0, 10), Math.round(v * 10) / 10]); store(wtKey, JSON.stringify(w.slice(-24))); $('wtIn').value = ''; weightUI(); drawShare(); };
+$('wtSave').onclick = () => { let v = parseFloat($('wtIn').value); if (wU() === 'lbs') v = v / LB; if (!(v > 25 && v < 300)) return; let w = []; try { w = JSON.parse(store(wtKey) || '[]'); } catch (e) {} w.push([new Date().toISOString().slice(0, 10), Math.round(v * 10) / 10]); store(wtKey, JSON.stringify(w.slice(-24))); $('wtIn').value = ''; render(); };
 // Share image: same look as the carousel sample card. Photo up top fading to black, then name, three stats, Heat meter, badges.
 let GRAY = { src: '', out: '' };
 function grayOf(src, cb) {
@@ -300,10 +300,6 @@ function grayOf(src, cb) {
   } catch (e) { cb(src); } };
   im.onerror = () => cb(''); im.src = src;
 }
-function drawShare() {
-  const s = SP.snap, L = LAD_SEL, ri = curRank(L), r = RANKS[Math.max(0, ri)], hide = SP.exec && SP.compete === 'OFF';
-  const lk = hide || ri < 0 ? 'b' : r[0];
-  const el = $('shimg'); el.className = 'shimg v2 lv-' + lk + (OPT.f === '45' ? ' f45' : '');
 // Texture fades in from its top edge. Built from stacked bands of rising opacity, since the share image maker ignores CSS masks.
 function texBands(lk) {
   if (lk !== 'i' && lk !== 'a') return '';
@@ -315,11 +311,38 @@ function texBands(lk) {
   out.push(`<div class="sx-band" style="top:${F}%;height:${100 - F}%"><div class="sx-pat" style="top:${-F / (100 - F) * 100}%;height:${100 / (100 - F) * 100}%"></div></div>`);
   return out.join('');
 }
+// Weight badges. Worked out on this phone from the weights the member logs here, so they stay private like the weight itself.
+const WTB = ['wt_track', 'wt_2', 'wt_5', 'wt_10'];
+Object.assign(ICON, {
+  wt_track: `<rect x="4" y="5" width="26" height="25" rx="6" fill="none" stroke="#C9CED6" stroke-width="3"/><path d="M11 14a6 6 0 0 1 12 0" fill="none" stroke="#C9CED6" stroke-width="2.5"/><path d="M17 14l3-4" stroke="#E8382A" stroke-width="2.5" stroke-linecap="round"/><path d="M10 23h14" stroke="#C9CED6" stroke-width="2.5" stroke-linecap="round"/>`,
+  wt_2: wtIcon('2'), wt_5: wtIcon('5'), wt_10: wtIcon('10')
+});
+function wtIcon(n) { const bars = { '2': 1, '5': 2, '10': 3 }[n]; let b = ''; for (let i = 0; i < 3; i++) b += `<rect x="${7 + i * 7.5}" y="27" width="5" height="4" rx="1.5" fill="${i < bars ? '#E8382A' : '#3a3d42'}"/>`; return `<path d="M17 3v16" stroke="#C9CED6" stroke-width="3.5" stroke-linecap="round"/><path d="M10 13l7 7 7-7" fill="none" stroke="#C9CED6" stroke-width="3.5" stroke-linecap="round" stroke-linejoin="round"/>${b}`; }
+Object.assign(NAME, { wt_track: 'Tracking', wt_2: 'Down 2%', wt_5: 'Down 5%', wt_10: 'Down 10%' });
+Object.assign(SHORT, { wt_track: 'TRACKING', wt_2: '−2%', wt_5: '−5%', wt_10: '−10%' });
+Object.assign(HOW, { wt_track: 'Log your weight in 3 different months', wt_2: '2% below your first logged weight', wt_5: '5% below your first logged weight', wt_10: '10% below your first logged weight' });
+FLEX.splice(FLEX.indexOf('level_up'), 0, 'wt_10', 'wt_5'); FLEX.push('wt_2', 'wt_track');
+function wtLog() { try { return JSON.parse(store(wtKey) || '[]'); } catch (e) { return []; } }
+function wtEarned() {
+  const w = wtLog(), out = {}; if (!w.length) return out;
+  const months = []; w.forEach(([d]) => { const m = d.slice(0, 7); if (months.indexOf(m) < 0) { months.push(m); if (months.length === 3 && !out.wt_track) out.wt_track = d; } });
+  const st = w[0][1];
+  w.slice(1).forEach(([d, kg]) => { const pc = (st - kg) / st * 100; [[2, 'wt_2'], [5, 'wt_5'], [10, 'wt_10']].forEach(([t, k]) => { if (pc >= t && !out[k]) out[k] = d; }); });
+  return out;
+}
+function drawShare() {
+  const s = SP.snap, L = LAD_SEL, ri = curRank(L), r = RANKS[Math.max(0, ri)], hide = SP.exec && SP.compete === 'OFF';
+  const lk = hide || ri < 0 ? 'b' : r[0];
+  const el = $('shimg'); el.className = 'shimg v2 lv-' + lk + (OPT.f === '45' ? ' f45' : '');
   const LADN = { sprint: 'Sprint', middle: 'Mid Distance', long: 'Long Distance' };
   const rl = hide ? '' : ri >= 0 ? r[2] : '';
-  let w = []; try { w = JSON.parse(store(wtKey) || '[]'); } catch (e) {}
+  const w = wtLog();
   const wd = w.length > 1 ? Math.round((w[w.length - 1][1] - w[0][1]) * 10) / 10 : 0;
-  const wt = OPT.weight && w.length ? `<div class="sx-wt">Weight ${wShow(w[w.length - 1][1])} ${wU()}${wd < 0 ? ` · <b>${String(wShow(wd)).replace('-', '−')} ${wU()}</b>` : ''}</div>` : '';
+  const since = w.length ? new Date(w[0][0] + 'T12:00:00').toLocaleDateString('en-GB', { month: 'short' }) : '';
+  const wt = OPT.weight && w.length ? `<div class="sx-wt">Weight ${wShow(w[w.length - 1][1])} ${wU()}${wd < 0 ? ` · <b>↓ ${wShow(-wd)} ${wU()}</b> since ${since}` : ''}</div>` : '';
+  const recent = d => (Date.now() - new Date(d + 'T12:00:00')) < 35 * 864e5;
+  const wtNew = OPT.weight ? Object.entries(wtEarned()).filter(([, d]) => recent(d)).map(([k]) => k) : [];
+  const monthB = (s ? s.month : []).concat(wtNew);
   const pb = s && s.newPbs.find(n => LAD_EV[L].indexOf(n.event) > -1);
   const hist = SP.hist[L] || [], last = hist[hist.length - 1], prev = hist[hist.length - 2];
   const chg = last && prev && last.b.event === prev.b.event && last.b.s < prev.b.s ? fmtDiff(last.b.s - prev.b.s, last.b.event) : '';
@@ -332,7 +355,7 @@ function texBands(lk) {
   else stats.push(col('Best', '—', 'first result soon'));
   if (chg) stats.push(col('Change', chg, 'faster', 'go'));
   const pips = !hide && ri >= 0 ? `<span class="pips">${pipsHtml(r[0], r[1])}</span>` : '';
-  const badges = s && s.month.length ? `<div class="sx-lab" style="margin-bottom:9px">This month</div><div class="sx-chips">${chips(s.month, OPT.f === '45' ? 7 : 5)}</div>` : '';
+  const badges = monthB.length ? `<div class="sx-lab" style="margin-bottom:9px">This month</div><div class="sx-chips">${chips(monthB, OPT.f === '45' ? 7 : 5)}</div>` : '';
   el.innerHTML = `<div class="sx-wrap"><div class="sx-bg" id="sxBg"></div><div class="sx-fade"></div><div class="sx-tex">${texBands(lk)}</div>${lk === 'h' ? `<img class="sx-wm" src="${FLAME}" alt=""><div class="sx-frame2"></div>` : ''}
    <div class="sx-in">
     <div class="sx-top"><div><div class="sx-club">HOF RUN CLUB</div><div class="sx-lab" style="margin-top:7px">${esc((s ? s.label : 'Before your first') + ' specs')}</div></div><img class="sx-logo" src="${FLAME}" alt=""></div>
