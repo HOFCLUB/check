@@ -24,12 +24,13 @@
   .shimg.v2>.sx-wrap{position:absolute;inset:1px;border-radius:17px;overflow:hidden;background:#0a0a0a}
   .shimg.v2 .sx-wrap>*{z-index:auto}
   .sx-tex{position:absolute;left:0;right:0;bottom:0;height:46%;pointer-events:none}
+  .sx-band{position:absolute;left:0;right:0;overflow:hidden}.sx-pat{position:absolute;left:0;right:0}
   .shimg.v2.lv-i{background:linear-gradient(160deg,#5b6068,#2a2c30 45%,#6b7078)}
-  .shimg.v2.lv-i .sx-tex{background:repeating-linear-gradient(115deg,rgba(255,255,255,.035) 0 1px,transparent 1px 7px)}
+  .shimg.v2.lv-i .sx-pat{background:repeating-linear-gradient(115deg,rgba(255,255,255,.035) 0 1px,transparent 1px 7px)}
   .shimg.v2.lv-a{background:linear-gradient(135deg,#C9CED6,#3a3d42 40%,#E8382A)}
   .shimg.v2.lv-a>.sx-wrap{inset:2px;border-radius:16px}
   .shimg.v2.lv-a .sx-rank>span:first-child{font-weight:600}
-  .shimg.v2.lv-a .sx-tex{background:repeating-linear-gradient(45deg,rgba(255,255,255,.035) 0 2px,transparent 2px 6px),repeating-linear-gradient(-45deg,rgba(255,255,255,.035) 0 2px,transparent 2px 6px)}
+  .shimg.v2.lv-a .sx-pat{background:repeating-linear-gradient(45deg,rgba(255,255,255,.035) 0 2px,transparent 2px 6px),repeating-linear-gradient(-45deg,rgba(255,255,255,.035) 0 2px,transparent 2px 6px)}
   .shimg.v2.lv-h{background:linear-gradient(135deg,#E8382A,#C9CED6 30%,#fff 50%,#C9CED6 70%,#E8382A)}
   .shimg.v2.lv-h{box-shadow:0 0 30px rgba(232,56,42,.35)}
   .shimg.v2.lv-h>.sx-wrap{inset:2.5px;border-radius:15.5px}
@@ -303,6 +304,17 @@ function drawShare() {
   const s = SP.snap, L = LAD_SEL, ri = curRank(L), r = RANKS[Math.max(0, ri)], hide = SP.exec && SP.compete === 'OFF';
   const lk = hide || ri < 0 ? 'b' : r[0];
   const el = $('shimg'); el.className = 'shimg v2 lv-' + lk + (OPT.f === '45' ? ' f45' : '');
+// Texture fades in from its top edge. Built from stacked bands of rising opacity, since the share image maker ignores CSS masks.
+function texBands(lk) {
+  if (lk !== 'i' && lk !== 'a') return '';
+  const N = 14, F = 55, out = [];
+  for (let k = 0; k < N; k++) {
+    const t = k * F / N, hh = F / N, op = Math.pow((k + 1) / (N + 1), 1.6);
+    out.push(`<div class="sx-band" style="top:${t}%;height:${hh + .3}%;opacity:${op.toFixed(3)}"><div class="sx-pat" style="top:${-t / hh * 100}%;height:${100 / hh * 100}%"></div></div>`);
+  }
+  out.push(`<div class="sx-band" style="top:${F}%;height:${100 - F}%"><div class="sx-pat" style="top:${-F / (100 - F) * 100}%;height:${100 / (100 - F) * 100}%"></div></div>`);
+  return out.join('');
+}
   const LADN = { sprint: 'Sprint', middle: 'Mid Distance', long: 'Long Distance' };
   const rl = hide ? '' : ri >= 0 ? r[2] : '';
   let w = []; try { w = JSON.parse(store(wtKey) || '[]'); } catch (e) {}
@@ -321,7 +333,7 @@ function drawShare() {
   if (chg) stats.push(col('Change', chg, 'faster', 'go'));
   const pips = !hide && ri >= 0 ? `<span class="pips">${pipsHtml(r[0], r[1])}</span>` : '';
   const badges = s && s.month.length ? `<div class="sx-lab" style="margin-bottom:9px">This month</div><div class="sx-chips">${chips(s.month, OPT.f === '45' ? 7 : 5)}</div>` : '';
-  el.innerHTML = `<div class="sx-wrap"><div class="sx-bg" id="sxBg"></div><div class="sx-fade"></div><div class="sx-tex"></div>${lk === 'h' ? `<img class="sx-wm" src="${FLAME}" alt=""><div class="sx-frame2"></div>` : ''}
+  el.innerHTML = `<div class="sx-wrap"><div class="sx-bg" id="sxBg"></div><div class="sx-fade"></div><div class="sx-tex">${texBands(lk)}</div>${lk === 'h' ? `<img class="sx-wm" src="${FLAME}" alt=""><div class="sx-frame2"></div>` : ''}
    <div class="sx-in">
     <div class="sx-top"><div><div class="sx-club">HOF RUN CLUB</div><div class="sx-lab" style="margin-top:7px">${esc((s ? s.label : 'Before your first') + ' specs')}</div></div><img class="sx-logo" src="${FLAME}" alt=""></div>
     <div class="sx-gap"></div>
