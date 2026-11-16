@@ -284,22 +284,7 @@ $('bgFile').onchange = e => { const f = e.target.files[0]; if (!f) return; const
 function weightUI() { let w = []; try { w = JSON.parse(store(wtKey) || '[]'); } catch (e) {} $('wtNow').textContent = w.length ? wShow(w[w.length - 1][1]) + ' ' + wU() : ''; $('wtIn').placeholder = wU(); document.querySelectorAll('#wtU .tog').forEach(x => x.classList.toggle('on', x.dataset.u === wU())); $('bgBtn').textContent = store(bgKey) ? 'Remove photo' : 'Add photo'; }
 document.querySelectorAll('#wtU .tog').forEach(b => b.onclick = () => { store(wtuKey, b.dataset.u); weightUI(); drawShare(); });
 $('wtSave').onclick = () => { let v = parseFloat($('wtIn').value); if (wU() === 'lbs') v = v / LB; if (!(v > 25 && v < 300)) return; let w = []; try { w = JSON.parse(store(wtKey) || '[]'); } catch (e) {} w.push([new Date().toISOString().slice(0, 10), Math.round(v * 10) / 10]); store(wtKey, JSON.stringify(w.slice(-24))); $('wtIn').value = ''; render(); };
-// Share image: same look as the carousel sample card. Photo up top fading to black, then name, three stats, Heat meter, badges.
-let GRAY = { src: '', out: '' };
-function grayOf(src, cb) {
-  if (!src) return cb('');
-  if (GRAY.src === src && GRAY.out) return cb(GRAY.out);
-  const im = new Image();
-  im.onload = () => { try {
-    const k = Math.min(1, 900 / Math.max(im.width, im.height)), c = document.createElement('canvas');
-    c.width = Math.round(im.width * k); c.height = Math.round(im.height * k);
-    const x = c.getContext('2d'); x.drawImage(im, 0, 0, c.width, c.height);
-    const d = x.getImageData(0, 0, c.width, c.height), p = d.data;
-    for (let i = 0; i < p.length; i += 4) { let g = .3 * p[i] + .59 * p[i + 1] + .11 * p[i + 2]; g = Math.max(0, Math.min(255, (g - 128) * 1.12 + 128)) * .82; p[i] = p[i + 1] = p[i + 2] = g; }
-    x.putImageData(d, 0, 0); GRAY = { src, out: c.toDataURL('image/jpeg', .86) }; cb(GRAY.out);
-  } catch (e) { cb(src); } };
-  im.onerror = () => cb(''); im.src = src;
-}
+// Share image: same look as the carousel sample card. Member's photo as they chose it, fading to black, then name, three stats, Heat meter, badges.
 // Texture fades in from its top edge. Built from stacked bands of rising opacity, since the share image maker ignores CSS masks.
 function texBands(lk) {
   if (lk !== 'i' && lk !== 'a') return '';
@@ -370,7 +355,7 @@ function drawShare() {
     <div class="sx-motto">Believe · Begin · <span>Burn</span> · Become</div>
    </div></div>`;
   const src = store(bgKey) || (OPT.photo && CARD.photo) || '';
-  grayOf(src, g => { const bg = $('sxBg'); if (bg) bg.style.backgroundImage = g ? `url(${g})` : ''; });
+  const bgEl = $('sxBg'); if (bgEl) bgEl.style.backgroundImage = src ? `url(${src})` : '';
 }
 $('shareBtn').onclick = () => $('share').classList.toggle('on');
 document.querySelectorAll('#fmt .tog').forEach(b => b.onclick = () => { OPT.f = b.dataset.f; document.querySelectorAll('#fmt .tog').forEach(x => x.classList.toggle('on', x === b)); drawShare(); });
