@@ -4,11 +4,17 @@ var CHECK_PAGE = 'https://hofclub.github.io/check/';
 var BASE = (function () { var s = document.currentScript && document.currentScript.src || ''; return s.replace(/assets\/hof\.js.*$/, ''); })();
 var FLAME = BASE + 'assets/flame-white.png', WM = BASE + 'assets/wordmark-chrome.png';
 // POST keeps PINs and passwords out of links. Plain text avoids a CORS preflight.
+// The button that started a request shows a spinner until it finishes, so every tap gets a visible response.
+var HOF_LASTBTN = null;
+document.addEventListener('click', function (e) { var b = e.target.closest && e.target.closest('button'); HOF_LASTBTN = b; setTimeout(function () { if (HOF_LASTBTN === b) HOF_LASTBTN = null; }, 0); }, true);
 function hofApi(action, data) {
   var body = Object.assign({ action: action }, data || {});
+  var btn = HOF_LASTBTN && !HOF_LASTBTN.closest('.acts') ? HOF_LASTBTN : null;
+  if (btn) btn.classList.add('hofbusy');
+  var done = function () { if (btn) btn.classList.remove('hofbusy'); };
   return fetch(API_URL, { method: 'POST', credentials: 'omit', headers: { 'Content-Type': 'text/plain;charset=utf-8' }, body: JSON.stringify(body) })
     .then(function (r) { return r.json(); })
-    .then(function (d) { if (!d || !d.ok) throw new Error((d && d.error) || 'Something went wrong. Please try again.'); return d; });
+    .then(function (d) { done(); if (!d || !d.ok) throw new Error((d && d.error) || 'Something went wrong. Please try again.'); return d; }, function (e) { done(); throw e; });
 }
 function store(k, v) { try { if (v === undefined) return localStorage.getItem(k); if (v === null) localStorage.removeItem(k); else localStorage.setItem(k, v); } catch (e) { return null; } }
 function esc(s) { return String(s == null ? '' : s).replace(/[&<>"']/g, function (c) { return { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]; }); }

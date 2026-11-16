@@ -346,3 +346,24 @@ details.coll[open]>summary{margin-bottom:14px}
 .sw .mont{font-weight:800;font-size:13px;letter-spacing:.14em;text-transform:uppercase}
 @media (max-width:420px){.stats{grid-template-columns:1fr 1fr}.stats .stat:last-child{grid-column:1/-1}.dots{gap:5px}}
 .lc img.photo{display:block;object-fit:cover}
+
+/* ---- Clear, tappable buttons everywhere ---- */
+button{-webkit-tap-highlight-color:transparent;touch-action:manipulation;transition:transform .12s ease,box-shadow .15s ease,background-color .15s ease,border-color .15s ease,filter .15s ease}
+button:not(:disabled){cursor:pointer}
+button:not(:disabled):active{transform:scale(.96)}
+button:focus-visible{outline:2px solid #E8382A;outline-offset:3px}
+button:disabled{opacity:.45;cursor:default}
+.btn{box-shadow:0 6px 18px rgba(255,255,255,.10),inset 0 -2px 0 rgba(0,0,0,.12)}
+.btn:not(:disabled):hover{box-shadow:0 8px 24px rgba(255,255,255,.18),inset 0 -2px 0 rgba(0,0,0,.12)}
+.btn:not(:disabled):active{filter:brightness(.88);box-shadow:0 2px 8px rgba(255,255,255,.10)}
+.ghostbtn{border-color:#5a5a5a;color:#fff;background:#141414}
+.ghostbtn:not(:disabled):hover{border-color:#9a9a9a;background:#1c1c1c}
+.ghostbtn:not(:disabled):active{background:#262626;border-color:#fff}
+.tabs button:not(.on):hover{color:#fff}
+.acts button:not(:disabled):hover{border-color:#9a9a9a}
+/* while a button's request is running */
+button.hofbusy{position:relative;pointer-events:none;color:transparent!important}
+button.hofbusy::after{content:"";position:absolute;left:50%;top:50%;width:16px;height:16px;margin:-8px 0 0 -8px;border-radius:50%;border:2px solid rgba(128,128,128,.45);border-top-color:currentColor;animation:hofspin .8s linear infinite}
+.btn.hofbusy::after{border-top-color:#0B0B0B}
+.ghostbtn.hofbusy::after,.acts button.hofbusy::after{border-top-color:#fff}
+@keyframes hofspin{to{transform:rotate(360deg)}}
