@@ -20,6 +20,33 @@
   @keyframes sp{to{transform:rotate(360deg)}}
   .wtrow{display:flex;gap:8px;align-items:center;margin-top:10px}
   .wtrow input{max-width:120px}
+  .shimg.v2{position:relative;padding:0;display:block;overflow:hidden;background:#0a0a0a;border:1px solid #2a2a2a;border-radius:18px}
+  .sx-bg{position:absolute;left:0;right:0;top:0;height:66%;background:linear-gradient(160deg,#1c1c1e,#0a0a0a) center/cover no-repeat;background-size:cover;background-position:50% 22%}
+  .sx-fade{position:absolute;inset:0;background:linear-gradient(180deg,rgba(10,10,10,.55) 0%,rgba(10,10,10,0) 18%,rgba(10,10,10,.28) 44%,#0a0a0a 66%)}
+  .sx-in{position:absolute;inset:0;display:flex;flex-direction:column;padding:22px 20px 18px}
+  .sx-top{display:flex;justify-content:space-between;align-items:flex-start}
+  .sx-club{font:800 12px Montserrat,Arial,sans-serif;letter-spacing:.28em}
+  .sx-logo{width:26px}
+  .sx-gap{flex:1}
+  .sx-lab{font:500 10px Barlow,Arial,sans-serif;letter-spacing:.3em;color:var(--chrome);text-transform:uppercase}
+  .sx-who{display:flex;justify-content:space-between;align-items:flex-end;gap:10px}
+  .sx-nm{font:900 30px Montserrat,Arial,sans-serif;line-height:.95;text-transform:uppercase;letter-spacing:-.01em}
+  .sx-no{font:600 11px Montserrat,Arial,sans-serif;color:var(--chrome);letter-spacing:.12em;padding-bottom:3px}
+  .sx-rank{display:flex;align-items:center;gap:10px;margin-top:9px;white-space:nowrap;font:500 10px Barlow,Arial,sans-serif;letter-spacing:.18em;text-transform:uppercase;color:#fff}
+  .sx-rank .pips{display:inline-flex;gap:4px}.sx-rank .pips i{width:11px}
+  .sx-wt{margin-top:7px;font:500 10px Barlow,Arial,sans-serif;letter-spacing:.2em;color:var(--chrome);text-transform:uppercase}.sx-wt b{color:var(--go)}
+  .sx-stats{display:flex;margin-top:14px;padding-top:14px;border-top:1px solid rgba(255,255,255,.14)}
+  .sx-col{flex:1;min-width:0}.sx-col+.sx-col{border-left:1px solid rgba(255,255,255,.14);padding-left:12px}
+  .sx-val{font:900 26px Montserrat,Arial,sans-serif;line-height:1;margin-top:7px;white-space:nowrap}.sx-val.go{color:var(--go)}
+  .sx-sub{font:500 9px Barlow,Arial,sans-serif;letter-spacing:.18em;color:#8a8a8a;text-transform:uppercase;margin-top:6px}
+  .sx-heat{display:flex;align-items:center;gap:12px;margin-top:14px;padding-top:14px;border-top:1px solid rgba(255,255,255,.14)}
+  .sx-hrow{display:flex;justify-content:space-between;align-items:baseline}
+  .sx-lv{font:900 14px Montserrat,Arial,sans-serif;letter-spacing:.12em}.sx-hn{font:800 14px Montserrat,Arial,sans-serif}.sx-hn small{font-size:9px;color:var(--chrome);letter-spacing:.12em}
+  .sx-bar{height:5px;border-radius:3px;background:rgba(255,255,255,.12);margin-top:7px;overflow:hidden}.sx-bar b{display:block;height:100%;border-radius:3px;background:linear-gradient(90deg,#E8382A,#ff6a3d)}
+  .sx-heat + .sx-lab{margin-top:14px}
+  .sx-chips{display:flex;gap:7px;flex-wrap:nowrap;overflow:hidden}.sx-chips .chip{font-size:9.5px;padding:5px 8px 5px 5px;letter-spacing:.06em}.sx-chips .chip svg{width:13px;height:13px}
+  .sx-motto{margin-top:14px;font:500 9px Barlow,Arial,sans-serif;letter-spacing:.3em;color:var(--chrome);text-transform:uppercase}.sx-motto span{color:var(--red)}
+  .shimg.v2.f45 .sx-bg{height:58%}.shimg.v2.f45 .sx-fade{background:linear-gradient(180deg,rgba(10,10,10,.55) 0%,rgba(10,10,10,0) 16%,rgba(10,10,10,.3) 38%,#0a0a0a 58%)}
 </style>
 </head>
 <body>
@@ -229,24 +256,57 @@ $('bgFile').onchange = e => { const f = e.target.files[0]; if (!f) return; const
 function weightUI() { let w = []; try { w = JSON.parse(store(wtKey) || '[]'); } catch (e) {} $('wtNow').textContent = w.length ? wShow(w[w.length - 1][1]) + ' ' + wU() : ''; $('wtIn').placeholder = wU(); document.querySelectorAll('#wtU .tog').forEach(x => x.classList.toggle('on', x.dataset.u === wU())); $('bgBtn').textContent = store(bgKey) ? 'Remove photo' : 'Add photo'; }
 document.querySelectorAll('#wtU .tog').forEach(b => b.onclick = () => { store(wtuKey, b.dataset.u); weightUI(); drawShare(); });
 $('wtSave').onclick = () => { let v = parseFloat($('wtIn').value); if (wU() === 'lbs') v = v / LB; if (!(v > 25 && v < 300)) return; let w = []; try { w = JSON.parse(store(wtKey) || '[]'); } catch (e) {} w.push([new Date().toISOString().slice(0, 10), Math.round(v * 10) / 10]); store(wtKey, JSON.stringify(w.slice(-24))); $('wtIn').value = ''; weightUI(); drawShare(); };
+// Share image: same look as the carousel sample card. Photo up top fading to black, then name, three stats, Heat meter, badges.
+let GRAY = { src: '', out: '' };
+function grayOf(src, cb) {
+  if (!src) return cb('');
+  if (GRAY.src === src && GRAY.out) return cb(GRAY.out);
+  const im = new Image();
+  im.onload = () => { try {
+    const k = Math.min(1, 900 / Math.max(im.width, im.height)), c = document.createElement('canvas');
+    c.width = Math.round(im.width * k); c.height = Math.round(im.height * k);
+    const x = c.getContext('2d'); x.drawImage(im, 0, 0, c.width, c.height);
+    const d = x.getImageData(0, 0, c.width, c.height), p = d.data;
+    for (let i = 0; i < p.length; i += 4) { let g = .3 * p[i] + .59 * p[i + 1] + .11 * p[i + 2]; g = Math.max(0, Math.min(255, (g - 128) * 1.12 + 128)) * .82; p[i] = p[i + 1] = p[i + 2] = g; }
+    x.putImageData(d, 0, 0); GRAY = { src, out: c.toDataURL('image/jpeg', .86) }; cb(GRAY.out);
+  } catch (e) { cb(src); } };
+  im.onerror = () => cb(''); im.src = src;
+}
 function drawShare() {
-  const s = SP.snap, L = LAD_SEL, ri = curRank(L), r = RANKS[Math.max(0, ri)], k = ri >= 0 ? r[0] : 'b', hide = SP.exec && SP.compete === 'OFF';
-  const el = $('shimg'); el.classList.toggle('f45', OPT.f === '45');
-  const rl = hide ? '' : ri >= 0 ? r[2].toUpperCase() : '';
-  const who = (OPT.photo || OPT.name || OPT.num) ? `<div class="who">${OPT.photo && CARD.photo ? `<div class="ph"><img src="${esc(CARD.photo)}" alt="" style="width:100%;height:100%;object-fit:cover"></div>` : ''}<div>${OPT.name ? `<div class="nm t">${esc(CARD.first)}</div>` : ''}${OPT.num ? `<div class="no t">${esc(CARD.num)}</div>` : ''}${rl ? `<div class="lb t" style="margin-top:8px;color:#fff">${rl} · ${LADSHORT[L]}</div><div class="pips" style="margin-top:6px">${pipsHtml(r[0], r[1])}</div>` : ''}</div></div>` : (rl ? `<div><div class="lb t" style="color:#fff">${rl}</div><div class="pips" style="margin-top:6px">${pipsHtml(r[0], r[1])}</div></div>` : '');
+  const s = SP.snap, L = LAD_SEL, ri = curRank(L), r = RANKS[Math.max(0, ri)], hide = SP.exec && SP.compete === 'OFF';
+  const el = $('shimg'); el.className = 'shimg v2' + (OPT.f === '45' ? ' f45' : '');
+  const rl = hide ? '' : ri >= 0 ? r[2] : '';
   let w = []; try { w = JSON.parse(store(wtKey) || '[]'); } catch (e) {}
   const wd = w.length > 1 ? Math.round((w[w.length - 1][1] - w[0][1]) * 10) / 10 : 0;
-  const wt = OPT.weight && w.length ? `<div class="lb" style="margin-top:10px;letter-spacing:.14em">WEIGHT ${wShow(w[w.length - 1][1])} ${wU().toUpperCase()}${wd < 0 ? ` · <span>${String(wShow(wd)).replace('-', '−')} ${wU().toUpperCase()}</span>` : ''}</div>` : '';
+  const wt = OPT.weight && w.length ? `<div class="sx-wt">Weight ${wShow(w[w.length - 1][1])} ${wU()}${wd < 0 ? ` · <b>${String(wShow(wd)).replace('-', '−')} ${wU()}</b>` : ''}</div>` : '';
   const pb = s && s.newPbs.find(n => LAD_EV[L].indexOf(n.event) > -1);
   const hist = SP.hist[L] || [], last = hist[hist.length - 1], prev = hist[hist.length - 2];
   const chg = last && prev && last.b.event === prev.b.event && last.b.s < prev.b.s ? fmtDiff(last.b.s - prev.b.s, last.b.event) : '';
-  const H = s ? s.heat : 0, hi = heatLv(H);
-  el.innerHTML = `<div style="display:flex;justify-content:space-between;align-items:flex-start"><div><div class="mont t" style="font-weight:800;font-size:13px;letter-spacing:.24em">HOF RUN CLUB</div><div class="lb t" style="margin-top:6px">${esc((s ? s.label : '').toUpperCase())} SPECS</div></div><img class="logo" src="${FLAME}" alt="HOF"></div>
-   ${who}
-   <div class="stbox glass"><div class="big">${s ? s.sessions : 0}<span style="font-size:16px;color:var(--chrome)"> SESSIONS</span></div>${chg ? `<div class="go mont" style="font-weight:800;font-size:15px;margin-top:10px">${chg} FASTER</div>` : ''}${pb ? `<div class="big" style="font-size:42px;margin-top:4px">${pb.t}<span style="font-size:12px;letter-spacing:.1em;color:var(--red)"> NEW PB · ${pb.event.toUpperCase()}</span></div>` : ''}${wt}</div>
-   <div><div class="lb t" style="margin-bottom:8px;display:flex;align-items:center;gap:8px">${flameSvg(hi, 12)}${HEATLV[hi][0].toUpperCase()} · ${H} HEAT</div><div class="lb t" style="margin-bottom:8px">THIS MONTH</div><div class="chips">${s ? chips(s.month, 4) : ''}</div></div>
-   <div class="lb t">BELIEVE · BEGIN · <span style="color:var(--red)">BURN</span> · BECOME</div>`;
-  setFin(el, k); applyBg(el);
+  const H = s ? s.heat : 0, hi = heatLv(H), nx = HEATLV[hi + 1];
+  const pct = nx ? Math.round((H - HEATLV[hi][1]) / (nx[1] - HEATLV[hi][1]) * 100) : 100;
+  const col = (lab, val, sub, cls) => `<div class="sx-col"><div class="sx-lab">${lab}</div><div class="sx-val ${cls || ''}">${val}</div><div class="sx-sub">${sub}</div></div>`;
+  const stats = [col('Sessions', s ? s.sessions : 0, s ? 'this cycle' : 'so far')];
+  if (pb) stats.push(col('New PB', esc(pb.t), esc(pb.event)));
+  else if (last) stats.push(col('Best', esc(last.b.t || fmtT(last.b.s, last.b.event)), esc(last.b.event)));
+  else stats.push(col('Best', '—', 'first result soon'));
+  if (chg) stats.push(col('Change', chg, 'faster', 'go'));
+  const pips = !hide && ri >= 0 ? `<span class="pips">${pipsHtml(r[0], r[1])}</span>` : '';
+  const badges = s && s.month.length ? `<div class="sx-lab" style="margin-bottom:9px">This month</div><div class="sx-chips">${chips(s.month, OPT.f === '45' ? 4 : 3)}</div>` : '';
+  el.innerHTML = `<div class="sx-bg" id="sxBg"></div><div class="sx-fade"></div>
+   <div class="sx-in">
+    <div class="sx-top"><div><div class="sx-club">HOF RUN CLUB</div><div class="sx-lab" style="margin-top:7px">${esc((s ? s.label : 'Before your first') + ' specs')}</div></div><img class="sx-logo" src="${FLAME}" alt=""></div>
+    <div class="sx-gap"></div>
+    ${OPT.name || OPT.num ? `<div class="sx-who">${OPT.name ? `<div class="sx-nm">${esc(CARD.first)}</div>` : '<span></span>'}${OPT.num ? `<div class="sx-no">${esc(CARD.num)}</div>` : ''}</div>` : ''}
+    ${rl ? `<div class="sx-rank"><span>${esc(rl)} · ${LAD[L].replace(' distance', '')}</span>${pips}</div>` : `<div class="sx-rank"><span>${LAD[L]}</span></div>`}
+    ${wt}
+    <div class="sx-stats">${stats.join('')}</div>
+    <div class="sx-heat">${flameSvg(hi, 20)}<div style="flex:1"><div class="sx-hrow"><span class="sx-lv">${HEATLV[hi][0].toUpperCase()}</span><span class="sx-hn">${H} <small>HEAT</small></span></div>
+     <div class="sx-bar"><b style="width:${Math.max(pct, H ? 4 : 0)}%"></b></div><div class="sx-sub" style="margin-top:6px">${nx ? (nx[1] - H) + ' to ' + nx[0] : 'Top level'} · ${s ? 'this month' : 'first session'}</div></div></div>
+    ${badges}
+    <div class="sx-motto">Believe · Begin · <span>Burn</span> · Become</div>
+   </div>`;
+  const src = store(bgKey) || (OPT.photo && CARD.photo) || '';
+  grayOf(src, g => { const bg = $('sxBg'); if (bg) bg.style.backgroundImage = g ? `url(${g})` : ''; });
 }
 $('shareBtn').onclick = () => $('share').classList.toggle('on');
 document.querySelectorAll('#fmt .tog').forEach(b => b.onclick = () => { OPT.f = b.dataset.f; document.querySelectorAll('#fmt .tog').forEach(x => x.classList.toggle('on', x === b)); drawShare(); });
