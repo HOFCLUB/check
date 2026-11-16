@@ -1,0 +1,371 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="robots" content="noindex, nofollow">
+<title>HOF Team</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@600;800;900&family=Barlow:wght@400;500;600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="../assets/hof.css">
+<style>
+  main{gap:16px}
+  .brandtop{text-align:center;margin-top:6px}.brandtop img{width:30px}.brandtop div{font:900 12px Montserrat,Arial,sans-serif;letter-spacing:.4em;margin-top:8px}
+  #tabs{display:flex;gap:4px}#tabs button{flex:1;min-width:0}#tabs button[hidden]{display:none}
+  .who{display:flex;justify-content:space-between;align-items:center;font-size:14px;color:var(--chrome)}
+  .who b{color:#fff}
+  .cam{position:relative;border-radius:16px;overflow:hidden;background:#000;aspect-ratio:1/1;border:1px solid #2a2a2a}
+  .cam video{width:100%;height:100%;object-fit:cover;display:block}
+  .cam .aim{position:absolute;inset:18%;border:2px solid rgba(255,255,255,.85);border-radius:14px;box-shadow:0 0 0 999px rgba(0,0,0,.35)}
+  .cam .hint{position:absolute;left:0;right:0;bottom:12px;text-align:center;font-size:13px;color:#fff;text-shadow:0 1px 4px #000}
+  .person{display:flex;gap:14px;align-items:center}
+  .person img,.person .ph{width:74px;height:90px;border-radius:12px;object-fit:cover;border:2px solid var(--chrome);background:#1a1a1a;flex-shrink:0}
+  .person .nm{font:900 22px Montserrat,Arial,sans-serif;line-height:1.05}
+  .person .sm{font-size:13px;color:var(--chrome);margin-top:4px;line-height:1.45}
+  .st{display:inline-block;font:800 11px Montserrat,Arial,sans-serif;letter-spacing:.14em;padding:4px 9px;border-radius:20px;margin-top:6px}
+  .st.ACTIVE{background:rgba(61,220,132,.15);color:#3DDC84}.st.PENDING{background:rgba(255,193,7,.15);color:#ffc107}.st.INACTIVE,.st.UNKNOWN{background:rgba(232,56,42,.15);color:#E8382A}
+  .acts{display:grid;grid-template-columns:repeat(auto-fit,minmax(90px,1fr));gap:8px;margin-top:14px}
+  .acts button{border:1px solid #3a3a3a;background:#141414;color:#fff;font:800 12px Montserrat,Arial,sans-serif;letter-spacing:.14em;padding:14px 8px;border-radius:12px;cursor:pointer}
+  .acts button.main{background:#fff;color:#0B0B0B;border-color:#fff}
+  .acts button:disabled{opacity:.4}
+  .okmsg{color:#3DDC84;font-size:14px;margin-top:10px}.warn{color:#ffc107;font-size:13px;margin-top:8px}
+  .list{display:flex;flex-direction:column;gap:6px;margin-top:8px}
+  .list button{display:flex;justify-content:space-between;gap:10px;text-align:left;border:1px solid #2a2a2a;background:#121212;color:#fff;padding:12px;border-radius:10px;font:500 14px Barlow,Arial,sans-serif;cursor:pointer}
+  .list button span{color:var(--chrome);font-size:12px}
+  .grid2{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+  .form label{display:block;font-size:12px;letter-spacing:.14em;text-transform:uppercase;color:var(--chrome);margin:12px 0 6px}
+  .fld{width:100%}
+  select.fld{appearance:none;-webkit-appearance:none}
+  .item{border:1px solid #2a2a2a;border-radius:12px;padding:12px;margin-top:10px;background:#111}
+  .item .t{font:800 14px Montserrat,Arial,sans-serif}
+  .item .s{font-size:13px;color:var(--chrome);margin-top:4px;line-height:1.45}
+  .item .flag{font-size:13px;color:#ffc107;margin-top:6px}
+  .row3{display:flex;gap:8px;margin-top:10px;flex-wrap:wrap}
+  .row3 .ghostbtn{flex:1}
+  .pulse{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:12px}
+  .pulse div{border:1px solid #2a2a2a;border-radius:12px;padding:12px}
+  .pulse b{display:block;font:900 26px Montserrat,Arial,sans-serif}
+  .pulse span{font-size:12px;color:var(--chrome)}
+  .small{font-size:12px;color:var(--mute);margin-top:8px;line-height:1.5}
+  a.lnk{color:var(--chrome)}
+  .spin{display:inline-block;width:14px;height:14px;border:2px solid #555;border-top-color:#fff;border-radius:50%;animation:sp 1s linear infinite;vertical-align:middle}
+  @keyframes sp{to{transform:rotate(360deg)}}
+</style>
+</head>
+<body>
+<main>
+  <div class="brandtop"><img src="../assets/flame-white.png" alt=""><div>HOF TEAM</div></div>
+
+  <!-- sign in -->
+  <section class="panel gate" id="login" hidden>
+    <h2>Team sign-in</h2>
+    <p>For volunteers and execs. Use your Member number and the same PIN you use for your Specs.</p>
+    <input class="fld" id="lnum" placeholder="Member number, e.g. HOF-012" autocomplete="username" autocapitalize="characters">
+    <div class="pwrap pinw" style="margin-top:10px"><input class="pin" id="lpin" type="password" inputmode="numeric" maxlength="6" placeholder="PIN" autocomplete="current-password"><button type="button" class="eye" id="leye">Show</button></div>
+    <div class="err" id="lerr"></div>
+    <button class="btn" id="lgo" style="margin-top:14px">Sign in</button>
+    <p class="small">No PIN yet? Use the link in your team email, or ask Njanu to resend it.</p>
+  </section>
+
+  <!-- signed in -->
+  <section id="app" hidden style="display:flex;flex-direction:column;gap:16px">
+    <div class="who"><span>Signed in as <b id="me"></b></span><button class="ghostbtn" id="out">Sign out</button></div>
+    <div class="tabs" id="tabs"><button class="on" data-t="scan">SCAN</button><button data-t="res">RESULTS</button><button data-t="exec" id="execTab" hidden>EXEC</button></div>
+
+    <!-- SCAN -->
+    <div id="v-scan" style="display:flex;flex-direction:column;gap:14px">
+      <div class="panel">
+        <div class="eyebrow">Today's session</div>
+        <div class="opts" id="sess" style="margin-top:10px"><button class="opt on" data-v="Training">Training night</button><button class="opt" data-v="Special Sunday">Special Sunday</button></div>
+      </div>
+      <div class="cam" id="cam" hidden><video id="vid" playsinline muted></video><div class="aim"></div><div class="hint">Point at the QR on the back of the card</div></div>
+      <button class="btn" id="camBtn">Scan a card</button>
+      <div class="panel" id="found" hidden></div>
+      <div class="panel">
+        <div class="eyebrow">No card on them?</div>
+        <input class="fld" id="sq" placeholder="Type a name or HOF number" style="margin-top:10px">
+        <div class="list" id="sres"></div>
+      </div>
+    </div>
+
+    <!-- RESULTS -->
+    <div id="v-res" hidden style="display:flex;flex-direction:column;gap:14px">
+      <div class="panel form">
+        <div class="eyebrow">Log a result</div>
+        <label>Who</label>
+        <input class="fld" id="rq" placeholder="Type a name or HOF number">
+        <div class="list" id="rres"></div>
+        <div id="rwho" class="okmsg" hidden></div>
+        <label>What kind</label>
+        <select class="fld" id="kind">
+          <option value="BENCHMARK">Benchmark (first Tuesday)</option>
+          <option value="SPRINT TRIAL">Sprint trial (first Thursday)</option>
+          <option value="RACE">Race (road, 5K to marathon)</option>
+          <option value="TRACK MEET">Track meet (100, 200 or 400 m)</option>
+          <option value="CHALLENGE">Challenge Day</option>
+          <option value="HIKE">Hike or trail day</option>
+        </select>
+        <div id="evWrap"><label>Distance or event</label><select class="fld" id="ev"></select></div>
+        <div id="tWrap"><label>Official time</label><input class="fld" id="tm" inputmode="decimal" autocomplete="off"></div>
+        <div class="grid2">
+          <div><label>Date</label><input class="fld" id="dt" type="date"></div>
+          <div><label>Place (optional)</label><input class="fld" id="pl" inputmode="numeric" placeholder="e.g. 2"></div>
+        </div>
+        <div id="raceWrap" hidden>
+          <label>Run with the team?</label>
+          <div class="opts" id="team"><button class="opt on" data-v="TEAM">With the team</button><button class="opt" data-v="SOLO">On their own</button></div>
+          <label>Race or meet name</label>
+          <input class="fld" id="rn" placeholder="e.g. UWI Half Marathon 2027">
+          <label>Proof of the official result</label>
+          <input class="fld" id="pf" placeholder="Official results link (or add a screenshot below)">
+          <div class="row3"><label class="ghostbtn" style="text-align:center;margin:0;cursor:pointer">Add screenshot<input type="file" id="pfImg" accept="image/*" hidden></label></div>
+          <div class="small" id="pfNote">Watch, Strava or app screens don't count. It must show name or bib, race, date, distance and official time.</div>
+        </div>
+        <div class="err" id="rerr"></div>
+        <button class="btn" id="rgo" style="margin-top:16px">Log result</button>
+        <div id="rdone"></div>
+      </div>
+    </div>
+
+    <!-- EXEC -->
+    <div id="v-exec" hidden style="display:flex;flex-direction:column;gap:14px">
+      <div class="panel">
+        <div class="eyebrow">Needs check</div>
+        <div id="pend"><p class="small"><span class="spin"></span></p></div>
+      </div>
+      <div class="panel">
+        <div class="eyebrow">Profiles to complete</div>
+        <div id="gaps"></div>
+      </div>
+      <div class="panel form">
+        <div class="eyebrow">Edit a member</div>
+        <input class="fld" id="eq" placeholder="Type a name or HOF number" style="margin-top:10px">
+        <div class="list" id="eres"></div>
+        <div id="edit"></div>
+      </div>
+      <div class="panel form">
+        <div class="eyebrow">Club pulse</div>
+        <p class="small">Club totals for this cycle. Needs the team password (case-sensitive).</p>
+        <div class="pwrap"><input class="fld" id="tpw" type="password" placeholder="Team password" autocomplete="off"></div>
+        <div class="err" id="perr"></div>
+        <button class="btn" id="pgo" style="margin-top:12px">Show pulse</button>
+        <div id="pulse"></div>
+      </div>
+      <div class="panel">
+        <div class="eyebrow">More</div>
+        <div class="row3"><a class="ghostbtn" href="../print/" style="text-align:center;text-decoration:none">Print cards</a><a class="ghostbtn" id="guide" target="_blank" rel="noopener" style="text-align:center;text-decoration:none">Team guide</a></div>
+      </div>
+    </div>
+  </section>
+</main>
+<script src="../assets/hof.js"></script>
+<script>
+let S = null; try { S = JSON.parse(store('hofteam') || 'null'); } catch (e) {}
+const today = () => { const d = new Date(Date.now() - 4 * 3600e3); return d.toISOString().slice(0, 10); };
+const EVS = { BENCHMARK: ['1.6 km', '3 km', '5 km'], 'SPRINT TRIAL': ['100 m', '200 m', '400 m'], 'TRACK MEET': ['100 m', '200 m', '400 m'], RACE: ['5 km', '10K', 'Half', 'Marathon'] };
+const EVNAME = { '5 km': '5K', Half: 'Half marathon' };
+const PH = { '100 m': '13.4', '200 m': '27.9', '400 m': '1:05.3', '1.6 km': '7:45', '3 km': '15:20', '5 km': '24:30', '10K': '0:52:30', Half: '1:58:00', Marathon: '4:15:00' };
+const call = (a, d) => hofApi(a, Object.assign({ token: S && S.token }, d || {})).catch(e => { if (/sign in again/i.test(e.message)) { signOut(); } throw e; });
+function opts(el, cb) { el.querySelectorAll('.opt').forEach(b => b.onclick = () => { el.querySelectorAll('.opt').forEach(x => x.classList.toggle('on', x === b)); cb && cb(b.dataset.v); }); }
+const val = el => (el.querySelector('.opt.on') || {}).dataset.v;
+function signOut() { store('hofteam', null); S = null; stopCam(); show(); }
+
+// ---------- sign in ----------
+$('leye').onclick = () => { const i = $('lpin'); const s = i.type === 'password'; i.type = s ? 'text' : 'password'; $('leye').textContent = s ? 'Hide' : 'Show'; };
+$('lgo').onclick = () => {
+  $('lerr').textContent = ''; $('lgo').disabled = true;
+  hofApi('teamLogin', { num: $('lnum').value.trim(), pin: $('lpin').value.trim() }).then(d => {
+    S = { token: d.token, first: d.first, exec: d.exec, guide: d.guide }; store('hofteam', JSON.stringify(S)); $('lpin').value = ''; show();
+  }).catch(e => { $('lerr').textContent = e.message; }).finally(() => { $('lgo').disabled = false; });
+};
+$('lpin').onkeydown = e => { if (e.key === 'Enter') $('lgo').click(); };
+$('out').onclick = signOut;
+
+function show() {
+  $('login').hidden = !!S; $('app').hidden = !S;
+  if (!S) return;
+  $('me').textContent = S.first; $('execTab').hidden = !S.exec;
+  if (S.guide) $('guide').href = S.guide; else $('guide').hidden = true;
+  tab(location.hash === '#exec' && S.exec ? 'exec' : location.hash === '#results' ? 'res' : 'scan');
+}
+document.querySelectorAll('#tabs button').forEach(b => b.onclick = () => tab(b.dataset.t));
+function tab(t) {
+  document.querySelectorAll('#tabs button').forEach(b => b.classList.toggle('on', b.dataset.t === t));
+  ['scan', 'res', 'exec'].forEach(k => $('v-' + k).hidden = k !== t);
+  history.replaceState(null, '', location.pathname + (t === 'scan' ? '' : '#' + (t === 'res' ? 'results' : 'exec')));
+  if (t !== 'scan') stopCam();
+  if (t === 'exec') loadExec();
+}
+
+// ---------- search helper ----------
+function searcher(input, out, pick) {
+  let tm;
+  input.oninput = () => { clearTimeout(tm); const q = input.value.trim(); if (q.length < 2) { out.innerHTML = ''; return; }
+    tm = setTimeout(() => call('search', { q }).then(d => {
+      out.innerHTML = d.people.length ? d.people.map(p => `<button data-id="${esc(p.id)}"><b>${esc(p.name)}</b><span>${esc(p.num)} · ${esc(p.status)}</span></button>`).join('') : '<p class="small">No one found.</p>';
+      out.querySelectorAll('button').forEach(b => b.onclick = () => { out.innerHTML = ''; input.value = ''; pick(b.dataset.id, d.people.find(p => p.id === b.dataset.id)); });
+    }).catch(e => { out.innerHTML = '<p class="err">' + esc(e.message) + '</p>'; }), 300); };
+}
+
+// ---------- SCAN ----------
+opts($('sess'));
+let stream = null, raf = null, det = null;
+function idFrom(text) { const m = String(text).match(/[?&]id=([^&#\s]+)/); return m ? decodeURIComponent(m[1]) : (/^[A-Za-z0-9_-]{6,}$/.test(text) ? text : ''); }
+function stopCam() { if (raf) cancelAnimationFrame(raf); raf = null; if (stream) stream.getTracks().forEach(t => t.stop()); stream = null; $('cam').hidden = true; $('camBtn').textContent = 'Scan a card'; }
+function loadJsQR() { return window.jsQR ? Promise.resolve() : new Promise((res, rej) => { const s = document.createElement('script'); s.src = 'https://cdn.jsdelivr.net/npm/jsqr@1.4.0/dist/jsQR.min.js'; s.onload = res; s.onerror = () => rej(new Error('Scanner could not load. Use the name search below.')); document.head.appendChild(s); }); }
+$('camBtn').onclick = async () => {
+  if (stream) { stopCam(); return; }
+  try {
+    if ('BarcodeDetector' in window) { try { det = new BarcodeDetector({ formats: ['qr_code'] }); } catch (e) { det = null; } }
+    if (!det) await loadJsQR();
+    stream = await navigator.mediaDevices.getUserMedia({ video: { facingMode: 'environment' }, audio: false });
+    const v = $('vid'); v.srcObject = stream; await v.play();
+    $('cam').hidden = false; $('camBtn').textContent = 'Stop camera'; $('found').hidden = true;
+    const cv = document.createElement('canvas'), cx = cv.getContext('2d', { willReadFrequently: true });
+    const tick = async () => {
+      if (!stream) return;
+      let txt = '';
+      try {
+        if (v.readyState >= 2) {
+          if (det) { const r = await det.detect(v); if (r.length) txt = r[0].rawValue; }
+          else { cv.width = v.videoWidth; cv.height = v.videoHeight; cx.drawImage(v, 0, 0); const im = cx.getImageData(0, 0, cv.width, cv.height); const r = jsQR(im.data, im.width, im.height, { inversionAttempts: 'dontInvert' }); if (r) txt = r.data; }
+        }
+      } catch (e) {}
+      const id = txt && idFrom(txt);
+      if (id) { if (navigator.vibrate) navigator.vibrate(60); stopCam(); person(id); return; }
+      raf = requestAnimationFrame(tick);
+    };
+    tick();
+  } catch (e) { stopCam(); alertBox(e.name === 'NotAllowedError' ? 'Camera blocked. Allow camera access for this page in your browser settings, or use the name search.' : e.message); }
+};
+function alertBox(m) { const f = $('found'); f.hidden = false; f.innerHTML = '<p class="err">' + esc(m) + '</p>'; }
+searcher($('sq'), $('sres'), id => person(id));
+function person(id) {
+  const f = $('found'); f.hidden = false; f.innerHTML = '<p class="small"><span class="spin"></span> Checking card...</p>';
+  call('scanInfo', { id }).then(p => {
+    const active = String(p.status).toUpperCase() === 'ACTIVE';
+    f.innerHTML = `<div class="person">${p.photo ? `<img src="${esc(p.photo)}" alt="">` : '<div class="ph"></div>'}<div><div class="nm">${esc(p.full)}</div>
+      <div class="sm">${esc(p.num)} · ${esc(String(p.type).toLowerCase())}${p.focus ? ' · ' + esc(p.focus) + (p.event ? ' ' + esc(p.event) : '') : ''}<br>${p.group ? 'Group: ' + esc(p.group) + '<br>' : ''}${esc(p.rankName)}</div>
+      <span class="st ${esc(String(p.status).toUpperCase())}">${esc(p.status)}</span></div></div>
+      ${p.today.length ? `<div class="okmsg">Already today: ${p.today.map(esc).join(', ')}</div>` : ''}
+      ${p.profileIncomplete ? '<div class="warn">Profile not complete. Remind them to finish it from their card link.</div>' : ''}
+      ${active ? `<div class="acts"><button class="main" data-m="PRESENT">Present</button>${p.team ? '<button data-m="ON DUTY">On duty</button><button data-m="LEADING">Leading</button>' : ''}</div>` : '<div class="warn">Not active. Don\'t sign them in. Send them to the admin exec.</div>'}
+      <div id="sdone"></div><div class="row3"><button class="ghostbtn" id="next">Next person</button></div>`;
+    f.querySelectorAll('[data-m]').forEach(b => b.onclick = () => {
+      f.querySelectorAll('[data-m]').forEach(x => x.disabled = true);
+      call('scan', { id, mode: b.dataset.m, session: val($('sess')) }).then(r => {
+        $('sdone').innerHTML = `<div class="okmsg">${esc(r.first)} signed in: ${esc(r.mode.toLowerCase())} · ${esc(r.session.toLowerCase())}${r.result === 'UPDATED' ? ' (already signed in today, updated)' : ''}.</div>`;
+      }).catch(e => { $('sdone').innerHTML = '<p class="err">' + esc(e.message) + '</p>'; f.querySelectorAll('[data-m]').forEach(x => x.disabled = false); });
+    });
+    $('next').onclick = () => { f.hidden = true; $('camBtn').click(); };
+  }).catch(e => { f.innerHTML = '<p class="err">' + esc(e.message) + '</p>'; });
+}
+
+// ---------- RESULTS ----------
+let RID = null, IMG = '';
+searcher($('rq'), $('rres'), (id, p) => { RID = id; $('rwho').hidden = false; $('rwho').textContent = 'For ' + p.name + ' (' + p.num + ')'; });
+$('dt').value = today();
+function kindUI() {
+  const k = $('kind').value, list = EVS[k];
+  $('evWrap').hidden = $('tWrap').hidden = !list;
+  if (list) { const cur = $('ev').value; $('ev').innerHTML = list.map(e => `<option value="${e}">${EVNAME[e] || e}</option>`).join(''); if (list.indexOf(cur) > -1) $('ev').value = cur; }
+  $('raceWrap').hidden = !(k === 'RACE' || k === 'TRACK MEET');
+  phUI();
+}
+function phUI() { $('tm').placeholder = 'e.g. ' + (PH[$('ev').value] || ''); }
+$('kind').onchange = kindUI; $('ev').onchange = phUI; kindUI();
+opts($('team'));
+function shrink(file) { return new Promise((res, rej) => { const fr = new FileReader(); fr.onload = () => { const im = new Image(); im.onload = () => { const k = Math.min(1, 1600 / Math.max(im.width, im.height)); const c = document.createElement('canvas'); c.width = Math.round(im.width * k); c.height = Math.round(im.height * k); c.getContext('2d').drawImage(im, 0, 0, c.width, c.height); res(c.toDataURL('image/jpeg', .82)); }; im.onerror = () => rej(new Error('That image could not be read.')); im.src = fr.result; }; fr.readAsDataURL(file); }); }
+$('pfImg').onchange = e => { const f = e.target.files[0]; if (!f) return; shrink(f).then(d => { IMG = d; $('pfNote').innerHTML = '<span class="ok2" style="color:#3DDC84">Screenshot added.</span> Watch, Strava or app screens don\'t count.'; }).catch(er => { $('rerr').textContent = er.message; }); };
+$('rgo').onclick = () => {
+  $('rerr').textContent = ''; $('rdone').innerHTML = '';
+  if (!RID) { $('rerr').textContent = 'Pick who the result is for.'; return; }
+  const k = $('kind').value, timed = !!EVS[k];
+  if (timed && !$('tm').value.trim()) { $('rerr').textContent = 'Type the official time.'; return; }
+  const race = k === 'RACE' || k === 'TRACK MEET';
+  if (race && !$('pf').value.trim() && !IMG && val($('team')) === 'SOLO') { $('rerr').textContent = 'Races run on their own need the official results link or a screenshot.'; return; }
+  $('rgo').disabled = true;
+  call('logResult', { id: RID, kind: k, event: timed ? $('ev').value : '', time: $('tm').value.trim(), date: $('dt').value, place: $('pl').value.trim(),
+    team: race ? val($('team')) : '', raceName: race ? $('rn').value.trim() : '', proof: race ? $('pf').value.trim() : '', proofImage: race ? IMG : '' }).then(r => {
+    $('rdone').innerHTML = r.status === 'COUNTED' ? `<div class="okmsg">Logged for ${esc(r.first)}${r.time ? ': ' + esc(r.time) : ''}. It counts.</div>`
+      : `<div class="warn">Logged for ${esc(r.first)}, held for an exec to check: ${esc(r.flag)}.</div>`;
+    $('tm').value = ''; $('pl').value = ''; $('pf').value = ''; IMG = ''; $('pfImg').value = ''; $('pfNote').textContent = "Watch, Strava or app screens don't count. It must show name or bib, race, date, distance and official time.";
+  }).catch(e => { $('rerr').textContent = e.message; }).finally(() => { $('rgo').disabled = false; });
+};
+
+// ---------- EXEC ----------
+function loadExec() {
+  $('pend').innerHTML = '<p class="small"><span class="spin"></span></p>';
+  call('pending').then(d => {
+    $('pend').innerHTML = d.results.length ? d.results.map(r => `<div class="item" data-rid="${esc(r.id)}"><div class="t">${esc(r.name)} · ${esc(r.event || r.kind)} ${esc(r.time)}</div>
+      <div class="s">${esc(r.num)} · ${esc(r.date)} · ${esc(String(r.kind).toLowerCase())}${r.race ? ' · ' + esc(r.race) : ''}</div><div class="flag">${esc(r.flag)}</div>
+      ${r.proof ? `<div class="s"><a class="lnk" href="${esc(r.proof)}" target="_blank" rel="noopener">Open proof</a></div>` : ''}
+      <input class="fld" data-k="reason" placeholder="Reason (needed)" style="margin-top:10px">
+      <input class="fld" data-k="time" placeholder="Correct time (only for Fix)" style="margin-top:8px">
+      <div class="row3"><button class="ghostbtn" data-a="CONFIRM">Confirm</button><button class="ghostbtn" data-a="FIX">Fix</button><button class="ghostbtn" data-a="REJECT">Reject</button></div><div class="err"></div></div>`).join('')
+      : '<p class="small">Nothing waiting. Every logged result has counted.</p>';
+    $('pend').querySelectorAll('[data-a]').forEach(b => b.onclick = () => {
+      const it = b.closest('.item'), er = it.querySelector('.err');
+      const reason = it.querySelector('[data-k=reason]').value.trim(), time = it.querySelector('[data-k=time]').value.trim();
+      if (!reason) { er.textContent = 'Add a reason first.'; return; }
+      if (b.dataset.a === 'FIX' && !time) { er.textContent = 'Type the correct time to fix it.'; return; }
+      b.disabled = true;
+      call('resolve', { rid: it.dataset.rid, act: b.dataset.a, reason, time }).then(() => { it.innerHTML = `<div class="okmsg">Done: ${b.dataset.a.toLowerCase()}.</div>`; }).catch(e => { er.textContent = e.message; b.disabled = false; });
+    });
+    $('gaps').innerHTML = d.profiles.length ? '<p class="small">Active people still missing training focus or standards. Remind them, or fill it in under Edit a member.</p><div class="list">' + d.profiles.map(p => `<button data-id="${esc(p.id)}"><b>${esc(p.name)}</b><span>${esc(p.num)}</span></button>`).join('') + '</div>' : '<p class="small">Everyone active has a complete profile.</p>';
+    $('gaps').querySelectorAll('button').forEach(b => b.onclick = () => openEdit(b.dataset.id));
+  }).catch(e => { $('pend').innerHTML = '<p class="err">' + esc(e.message) + '</p>'; });
+}
+searcher($('eq'), $('eres'), id => openEdit(id));
+const RK = RANKS.map((r, i) => i).filter(i => i <= 3);
+function openEdit(id) {
+  const box = $('edit'); box.innerHTML = '<p class="small"><span class="spin"></span></p>';
+  box.scrollIntoView({ behavior: 'smooth', block: 'start' });
+  call('member', { id }).then(m => {
+    const sel = (k, list, cur) => `<select class="fld" data-k="${k}">${list.map(([v, t]) => `<option value="${esc(v)}"${String(v) === String(cur) ? ' selected' : ''}>${esc(t)}</option>`).join('')}</select>`;
+    const pl = L => m.placed && m.placed[L] !== '' && m.placed[L] != null ? m.placed[L] : '';
+    box.innerHTML = `<div class="item"><div class="t">${esc(m.full)}</div><div class="s">${esc(m.num)} · ${esc(String(m.type).toLowerCase())}</div>
+      <label>Every change needs a reason</label><input class="fld" data-k="reason" placeholder="e.g. Member asked at session, confirmed in person">
+      <label>Training focus</label>${sel('focus', [['', 'Not set'], ['sprint', 'Sprint'], ['middle', 'Middle distance'], ['long', 'Long distance']], m.focus || '')}
+      ${sel('event', [['', 'Sprint event'], ['100 m', '100 m'], ['200 m', '200 m'], ['400 m', '400 m']], m.event || '')}
+      <div class="row3"><button class="ghostbtn" data-f="focus">Save focus</button></div>
+      <label>Time standards</label>${sel('sex', [['', 'Not set'], ['Male', "Men's"], ['Female', "Women's"]], m.sex || '')}<div class="row3"><button class="ghostbtn" data-f="sex">Save standards</button></div>
+      <label>Starting placement (before their first result)</label>
+      <div class="grid2">${sel('pladder', [['sprint', 'Sprint'], ['middle', 'Middle'], ['long', 'Long']], m.focus || 'middle')}${sel('prank', RK.map(i => [i, RANKS[i][2]]), pl(m.focus || 'middle') === '' ? 0 : pl(m.focus || 'middle'))}</div>
+      <div class="row3"><button class="ghostbtn" data-f="placed">Save placement</button></div>
+      <label>Name on card</label><div class="grid2"><input class="fld" data-k="full" value="${esc(m.full)}"><input class="fld" data-k="first" value="${esc(m.first)}" placeholder="Nickname"></div><div class="row3"><button class="ghostbtn" data-f="name">Save name</button></div>
+      <label>Photo</label><div class="row3"><label class="ghostbtn" style="text-align:center;margin:0;cursor:pointer">Choose new photo<input type="file" data-k="photo" accept="image/*" hidden></label></div>
+      <label>WhatsApp (now ${esc(m.whatsappMasked || 'not set')})</label><input class="fld" data-k="whatsapp" inputmode="tel" placeholder="New number"><div class="row3"><button class="ghostbtn" data-f="whatsapp">Save WhatsApp</button></div>
+      <label>Email (now ${esc(m.emailMasked || 'not set')})</label><input class="fld" data-k="email" type="email" placeholder="New email. They confirm it from that inbox"><div class="row3"><button class="ghostbtn" data-f="email">Send confirm link</button></div>
+      <div class="err" id="eerr"></div><div id="edone"></div></div>`;
+    const g = k => box.querySelector(`[data-k="${k}"]`);
+    const send = (field, value) => {
+      $('eerr').textContent = ''; $('edone').innerHTML = '';
+      const reason = g('reason').value.trim(); if (!reason) { $('eerr').textContent = 'Add a reason first.'; return; }
+      call('edit', { id, field, value, reason }).then(() => { $('edone').innerHTML = `<div class="okmsg">Saved. It's in the Edits log.</div>`; }).catch(e => { $('eerr').textContent = e.message; });
+    };
+    g('pladder').onchange = () => { const v = pl(g('pladder').value); g('prank').value = v === '' ? 0 : v; };
+    box.querySelectorAll('[data-f]').forEach(b => b.onclick = () => {
+      const f = b.dataset.f;
+      if (f === 'focus') send('focus', { focus: g('focus').value, event: g('event').value });
+      else if (f === 'sex') send('sex', g('sex').value);
+      else if (f === 'placed') send('placed', { ladder: g('pladder').value, rank: g('prank').value });
+      else if (f === 'name') send('name', { full: g('full').value, first: g('first').value });
+      else send(f, g(f).value.trim());
+    });
+    g('photo').onchange = e => { const f = e.target.files[0]; if (f) shrink(f).then(d => send('photo', d)); };
+  }).catch(e => { box.innerHTML = '<p class="err">' + esc(e.message) + '</p>'; });
+}
+$('pgo').onclick = () => {
+  $('perr').textContent = ''; $('pulse').innerHTML = '';
+  call('pulse', { password: $('tpw').value }).then(p => {
+    $('tpw').value = '';
+    const b = (n, t) => `<div><b>${esc(n)}</b><span>${t}</span></div>`;
+    $('pulse').innerHTML = `<p class="small">${esc(p.label)}</p><div class="pulse">${b(p.sessions, 'Sessions held')}${b(p.turnout, 'Average turnout')}${b(p.bench, 'Benchmarked')}${b(p.pbs, 'New PBs')}${b(p.newMembers, 'New members')}${b(p.volsUnder4, 'Volunteers under 4')}</div>`;
+  }).catch(e => { $('perr').textContent = e.message; });
+};
+
+show();
+</script>
+</body>
+</html>

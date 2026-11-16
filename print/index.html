@@ -1,0 +1,123 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="robots" content="noindex, nofollow">
+<title>HOF Print Cards</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@600;800;900&family=Barlow:wght@400;500;600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="../assets/hof.css">
+<style>
+  main{gap:16px;max-width:760px}
+  .brandtop{text-align:center;margin-top:6px}.brandtop img{width:30px}.brandtop div{font:900 12px Montserrat,Arial,sans-serif;letter-spacing:.4em;margin-top:8px}
+  .msg{text-align:center;padding:40px 16px;color:var(--chrome)}
+  .msg b{display:block;color:#fff;font:900 18px Montserrat,Arial,sans-serif;letter-spacing:.2em;margin-bottom:8px}
+  .people label{display:flex;gap:12px;align-items:center;border:1px solid #2a2a2a;border-radius:10px;padding:12px;margin-top:8px;background:#121212;cursor:pointer}
+  .people input{width:18px;height:18px;accent-color:#E8382A}
+  .people span{color:var(--chrome);font-size:12px;margin-left:auto}
+  .row3{display:flex;gap:8px;margin-top:12px;flex-wrap:wrap}.row3>*{flex:1}
+  .small{font-size:12px;color:var(--mute);margin-top:8px;line-height:1.5}
+  .okmsg{color:#3DDC84;font-size:14px;margin-top:10px}
+  /* print sheet: credit-card size 85.6 x 54 mm with crop marks */
+  .sheet{display:none}
+  .cell{position:relative;width:85.6mm;height:54mm;margin:6mm}
+  .cell .card{width:85.6mm;border-radius:0}
+  .cell::before,.cell::after,.cell i::before,.cell i::after{content:"";position:absolute;border:0 solid #000}
+  .cell::before{left:-5mm;top:0;width:4mm;border-top-width:.2mm}
+  .cell::after{right:-5mm;top:0;width:4mm;border-top-width:.2mm}
+  .cell i::before{top:-5mm;left:0;height:4mm;border-left-width:.2mm}
+  .cell i::after{top:-5mm;right:0;height:4mm;border-right-width:.2mm}
+  .cell b{position:absolute;inset:0;pointer-events:none}
+  .cell b::before{content:"";position:absolute;left:0;bottom:-5mm;height:4mm;border-left:.2mm solid #000}
+  .cell b::after{content:"";position:absolute;right:0;bottom:-5mm;height:4mm;border-right:.2mm solid #000}
+  .cell u{position:absolute;right:-5mm;bottom:0;width:4mm;border-bottom:.2mm solid #000}
+  .cell s{position:absolute;left:-5mm;bottom:0;width:4mm;border-bottom:.2mm solid #000}
+  .grid{display:grid;grid-template-columns:repeat(2,97.6mm);justify-content:center}
+  .page{break-after:page;padding-top:4mm}
+  .page h6{font:600 8pt Barlow,Arial,sans-serif;color:#000;margin:0 0 2mm;text-align:center}
+  .back .grid{direction:rtl}.back .cell{direction:ltr}
+  @page{size:A4;margin:8mm}
+  @media print{
+    html,body{background:#fff!important}
+    main{display:none!important}
+    .sheet{display:block}
+    *{-webkit-print-color-adjust:exact;print-color-adjust:exact}
+    .card:not(.print) .lc .xsheen,.card:not(.print) .lc .xbar::before{animation:none}
+  }
+</style>
+</head>
+<body>
+<main>
+  <div class="brandtop"><img src="../assets/flame-white.png" alt=""><div>PRINT CARDS</div></div>
+  <div class="msg" id="msg"><b>LOADING</b>One moment...</div>
+  <section class="panel" id="pick" hidden>
+    <div class="eyebrow">Ticked for printing in the Register</div>
+    <div class="people" id="people"></div>
+    <p class="small">Prints at true card size (85.6 × 54 mm) with crop marks: fronts on one page, backs on the next, mirrored for double-sided printing. Set the printer to 100% scale (not "fit to page"). Printed cards never show a level.</p>
+    <div class="row3"><button class="btn" id="pr">Print</button></div>
+    <div class="row3"><button class="ghostbtn" id="img">Save 300 dpi images</button><button class="ghostbtn" id="done">Mark as printed</button></div>
+    <div id="out"></div>
+  </section>
+  <p class="small" style="text-align:center"><a href="../team/#exec" style="color:var(--chrome)">Back to Exec tools</a></p>
+</main>
+<div class="sheet" id="sheet"></div>
+<script src="../assets/hof.js"></script>
+<script>
+let S = null; try { S = JSON.parse(store('hofteam') || 'null'); } catch (e) {}
+let PEOPLE = [];
+const sel = () => PEOPLE.filter(p => { const c = document.querySelector(`[data-id="${CSS.escape(p.id)}"]`); return c && c.checked; });
+function fail(t, m) { $('msg').hidden = false; $('msg').innerHTML = '<b>' + esc(t) + '</b>' + m; }
+if (!S || !S.exec) fail('EXECS ONLY', 'Sign in on the <a href="../team/" style="color:#fff">team page</a> first, then come back here.');
+else hofApi('printList', { token: S.token }).then(d => {
+  PEOPLE = d.people;
+  $('msg').hidden = true; $('pick').hidden = false;
+  if (!PEOPLE.length) { $('people').innerHTML = '<p class="small">No one is ticked. Tick "Print card" on their row in the Register, then reload this page.</p>'; ['pr', 'img', 'done'].forEach(k => $(k).disabled = true); return; }
+  $('people').innerHTML = PEOPLE.map(p => `<label><input type="checkbox" data-id="${esc(p.id)}" checked><b>${esc(p.full)}</b><span>${esc(p.num)} · ${esc(p.type.toLowerCase())}</span></label>`).join('');
+}).catch(e => fail('COULD NOT LOAD', esc(e.message)));
+
+function build(list) {
+  const cards = list.map(p => hofCard({ type: p.type, first: p.first, num: p.num, photo: p.photo, founding: p.founding, role: p.role, rank: -1, id: p.id }, { print: true }));
+  const pages = [];
+  for (let i = 0; i < cards.length; i += 8) {
+    const chunk = cards.slice(i, i + 8);
+    const cell = h => `<div class="cell"><i></i><b></b><u></u><s></s>${h}</div>`;
+    pages.push(`<div class="page"><h6>HOF cards · fronts · sheet ${i / 8 + 1}</h6><div class="grid">${chunk.map(c => cell(c.front)).join('')}</div></div>`);
+    pages.push(`<div class="page back"><h6>HOF cards · backs · sheet ${i / 8 + 1}</h6><div class="grid">${chunk.map(c => cell(c.back)).join('')}</div></div>`);
+  }
+  $('sheet').innerHTML = pages.join('');
+  return cards;
+}
+$('pr').onclick = () => { const l = sel(); if (!l.length) return; build(l); setTimeout(() => window.print(), 600); };
+$('img').onclick = () => {
+  const l = sel(); if (!l.length) return;
+  $('out').innerHTML = '<p class="small">Making images...</p>';
+  const go = () => {
+    const box = document.createElement('div'); box.style.cssText = 'position:fixed;left:-9999px;top:0;width:1012px';
+    document.body.appendChild(box);
+    let chain = Promise.resolve();
+    l.forEach(p => {
+      const c = hofCard({ type: p.type, first: p.first, num: p.num, photo: p.photo, founding: p.founding, role: p.role, rank: -1, id: p.id }, { print: true });
+      [['front', c.front], ['back', c.back]].forEach(([side, html]) => chain = chain.then(() => {
+        box.innerHTML = html;
+        return html2canvas(box.firstElementChild, { backgroundColor: null, scale: 1, useCORS: true }).then(cv => new Promise(res => cv.toBlob(b => {
+          const a = document.createElement('a'); a.href = URL.createObjectURL(b); a.download = p.num + '-' + side + '.png'; a.click(); setTimeout(() => URL.revokeObjectURL(a.href), 4000); res();
+        }, 'image/png')));
+      }));
+    });
+    chain.then(() => { box.remove(); $('out').innerHTML = '<div class="okmsg">Saved ' + l.length * 2 + ' images (1012 × 638 px, 300 dpi at card size).</div>'; })
+      .catch(e => { box.remove(); $('out').innerHTML = '<p class="err">' + esc(e.message) + '</p>'; });
+  };
+  if (window.html2canvas) go(); else { const s = document.createElement('script'); s.src = 'https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js'; s.onload = go; s.onerror = () => { $('out').innerHTML = '<p class="err">Image maker could not load. Use Print instead.</p>'; }; document.head.appendChild(s); }
+};
+$('done').onclick = () => {
+  const l = sel(); if (!l.length) return;
+  $('done').disabled = true;
+  hofApi('printed', { token: S.token, ids: l.map(p => p.id) }).then(r => {
+    $('out').innerHTML = `<div class="okmsg">Marked ${r.done} as printed. Their "Print card" tick is cleared and today's date is in "Printed".</div>`;
+    l.forEach(p => { const c = document.querySelector(`[data-id="${CSS.escape(p.id)}"]`); if (c) c.closest('label').remove(); });
+  }).catch(e => { $('out').innerHTML = '<p class="err">' + esc(e.message) + '</p>'; }).finally(() => { $('done').disabled = false; });
+};
+</script>
+</body>
+</html>

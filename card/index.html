@@ -2,181 +2,263 @@
 <html lang="en">
 <head>
 <meta charset="utf-8">
-<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <meta name="robots" content="noindex, nofollow">
 <title>HOF Member Card</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@600;800;900&family=Barlow:wght@400;500;600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="../assets/hof.css">
 <style>
-  html,body{margin:0;background:#000;color:#fff;font-family:Barlow,Arial,sans-serif}
-  main{max-width:760px;margin:0 auto;padding:24px 16px 48px;display:flex;flex-direction:column;gap:20px}
-  .card{width:100%;aspect-ratio:1012/638;container-type:inline-size;border-radius:3.2cqw;overflow:hidden}
-  .card *{--u:calc(100cqw / 1012)}
-  .face{position:relative;width:100%;height:100%;box-sizing:border-box;background:#0B0B0B;display:flex}
-  .front{flex-direction:column;justify-content:space-between;padding:calc(52*var(--u)) calc(56*var(--u)) calc(44*var(--u))}
-  .row{display:flex;justify-content:space-between;align-items:center}
-  .brand{display:flex;align-items:center;gap:calc(14*var(--u))}
-  .brand img{width:calc(40*var(--u));height:calc(54*var(--u));object-fit:contain}
-  .hof{font-family:Montserrat,Arial,sans-serif;font-weight:800;font-size:calc(20*var(--u));letter-spacing:calc(4*var(--u))}
-  .club{font-size:calc(13*var(--u));letter-spacing:calc(5*var(--u));color:#E8382A;font-weight:600;margin-top:calc(2*var(--u))}
-  .label{font-size:calc(13*var(--u));letter-spacing:calc(4*var(--u));color:#8A8A8A;font-weight:500}
-  .mid{display:flex;align-items:center;gap:calc(44*var(--u))}
-  .photo{width:calc(220*var(--u));height:calc(270*var(--u));border-radius:calc(18*var(--u));border:calc(3*var(--u)) solid #E8382A;background:#1A1A1A;object-fit:cover;flex-shrink:0;box-sizing:border-box}
-  .info{display:flex;flex-direction:column;gap:calc(14*var(--u));min-width:0}
-  .small{font-size:calc(14*var(--u));letter-spacing:calc(4*var(--u));color:#8A8A8A;font-weight:500}
-  .name{font-family:Montserrat,Arial,sans-serif;font-weight:800;font-size:calc(76*var(--u));line-height:.95;letter-spacing:calc(-1*var(--u));text-transform:uppercase;overflow-wrap:anywhere}
-  .num{font-family:Montserrat,Arial,sans-serif;font-weight:600;font-size:calc(30*var(--u));color:#C9CED6;letter-spacing:calc(2*var(--u))}
-  .badge{display:inline-block;margin-top:calc(6*var(--u));padding:calc(8*var(--u)) calc(16*var(--u));border:calc(1.5*var(--u)) solid #E8382A;color:#E8382A;font-size:calc(15*var(--u));letter-spacing:calc(3*var(--u));font-weight:600;align-self:flex-start}
-  .foot{border-top:1px solid #2A2A2A;padding-top:calc(20*var(--u))}
-  .foot div{font-size:calc(14*var(--u));letter-spacing:calc(6*var(--u));color:#8A8A8A;font-weight:500}
-  .foot div+div{font-size:calc(13*var(--u));letter-spacing:calc(3*var(--u))}
-  /* Team */
-  .team .photo{border-color:#E8382A}
-  .team .badge{border-color:#C9CED6;color:#C9CED6}
-  /* Executive */
-  .exec{box-shadow:inset 0 calc(5*var(--u)) 0 #FFFFFF}
-  .exec .photo{border-color:#FFFFFF}
-  .exec .label{color:#FFFFFF}
-  .exec .badge{background:#FFFFFF;border-color:#FFFFFF;color:#0B0B0B;font-weight:700}
-  /* Founding */
-  .founding{background:#080808;padding:calc(14*var(--u))}
-  .frame{position:relative;flex:1;box-sizing:border-box;border:calc(1.5*var(--u)) solid #9AA3AB;border-radius:calc(22*var(--u));padding:calc(30*var(--u)) calc(40*var(--u)) calc(28*var(--u));display:flex;flex-direction:column;justify-content:space-between;overflow:hidden}
-  .ghost{position:absolute;right:calc(28*var(--u));top:calc(120*var(--u));font-family:Montserrat,Arial,sans-serif;font-weight:900;font-size:calc(300*var(--u));line-height:1;color:transparent;-webkit-text-stroke:calc(2*var(--u)) #3A3F45;letter-spacing:calc(-8*var(--u))}
-  .founding .row,.founding .mid,.founding .foot{position:relative}
-  .wordmark{height:calc(110*var(--u));mix-blend-mode:lighten}
-  .founding .club{text-align:right}
-  .founding .photo{width:calc(210*var(--u));height:calc(258*var(--u));border-color:#C9CED6}
-  .founding .name{font-size:calc(72*var(--u))}
-  .nums{display:flex;align-items:baseline;gap:calc(18*var(--u))}
-  .fnum{font-family:Montserrat,Arial,sans-serif;font-weight:800;font-size:calc(28*var(--u));letter-spacing:calc(2*var(--u))}
-  .founding .num{font-size:calc(28*var(--u))}
-  .solid{display:inline-block;margin-top:calc(6*var(--u));padding:calc(8*var(--u)) calc(16*var(--u));background:#C9CED6;color:#0B0B0B;font-size:calc(15*var(--u));letter-spacing:calc(3*var(--u));font-weight:600;align-self:flex-start}
-  /* Back */
-  .back{align-items:center;gap:calc(56*var(--u));padding:calc(52*var(--u)) calc(56*var(--u)) calc(44*var(--u))}
-  .back .flame{position:absolute;top:calc(44*var(--u));right:calc(56*var(--u));width:calc(42*var(--u));height:calc(56*var(--u));object-fit:contain}
-  .qr{width:calc(300*var(--u));height:calc(300*var(--u));background:#fff;border-radius:calc(18*var(--u));padding:calc(10*var(--u));box-sizing:border-box;flex-shrink:0}
-  .qr img{width:100%;height:100%;display:block}
-  .copy{display:flex;flex-direction:column;gap:calc(16*var(--u));min-width:0}
-  .headline{font-family:Montserrat,Arial,sans-serif;font-weight:800;font-size:calc(40*var(--u));line-height:1.05}
-  .body{font-size:calc(18*var(--u));line-height:1.5;color:#C9CED6;max-width:calc(480*var(--u))}
-  .meta{display:flex;flex-direction:column;gap:calc(6*var(--u));margin-top:calc(6*var(--u))}
-  .meta div{font-size:calc(15*var(--u));letter-spacing:calc(2*var(--u));color:#8A8A8A}
-  .rule{width:calc(40*var(--u));height:calc(2*var(--u));background:#E8382A;margin-top:calc(4*var(--u))}
-  .note{color:#8A8A8A;font-size:14px;line-height:1.6;text-align:center}
-  .note a{color:#C9CED6}
-  .msg{text-align:center;padding:60px 16px;color:#C9CED6;font-size:16px}
-  .msg b{display:block;color:#fff;font-size:22px;letter-spacing:2px;margin-bottom:8px}
-  [hidden]{display:none!important}
+  main{gap:18px}
+  .msg{text-align:center;padding:60px 16px;color:var(--chrome);font-size:16px}
+  .msg b{display:block;color:#fff;font-size:22px;letter-spacing:2px;margin-bottom:8px;font-family:Montserrat,Arial,sans-serif}
+  .note a{color:var(--chrome)}
+  .empty2{border:1px dashed #3a3a3a;border-radius:14px;padding:18px;color:var(--chrome);font-size:14px;line-height:1.55;text-align:center}
+  .empty2 b{display:block;color:#fff;font-family:Montserrat,Arial,sans-serif;letter-spacing:.2em;font-size:12px;margin-bottom:6px}
+  .ok2{color:var(--go)}
+  .spin{display:inline-block;width:14px;height:14px;border:2px solid #555;border-top-color:#fff;border-radius:50%;animation:sp 1s linear infinite;vertical-align:middle}
+  @keyframes sp{to{transform:rotate(360deg)}}
+  .wtrow{display:flex;gap:8px;align-items:center;margin-top:10px}
+  .wtrow input{max-width:120px}
 </style>
 </head>
 <body>
 <main>
   <div class="msg" id="msg"><b>LOADING</b>One moment...</div>
+  <div class="tabs" id="tabs" hidden><button class="on" data-t="card">CARD</button><button data-t="specs">SPECS</button></div>
 
-  <div class="card" id="cardFront" hidden>
-    <div class="face front" id="std">
-      <div class="row">
-        <div class="brand">
-          <img src="../assets/flame-white.png" alt="">
-          <div><div class="hof">HEART OF FIRE</div><div class="club">RUN CLUB</div></div>
-        </div>
-        <div class="label" id="cardLabel">MEMBER CARD</div>
-      </div>
-      <div class="mid">
-        <img class="photo" id="photo" alt="" src="data:image/gif;base64,R0lGODlhAQABAAAAACH5BAEKAAEALAAAAAABAAEAAAICTAEAOw==">
-        <div class="info">
-          <div class="small" id="nameLabel">MEMBER</div>
-          <div class="name" id="name"></div>
-          <div class="num" id="num"></div>
-          <div class="badge" id="badge"></div>
-        </div>
-      </div>
-      <div class="row foot"><div>BELIEVE · BEGIN · BURN · BECOME</div><div>POWERED BY ESCAPAID</div></div>
-    </div>
+  <section id="cardView" hidden style="display:flex;flex-direction:column;gap:14px">
+    <div id="cardF"></div>
+    <div id="cardB"></div>
+    <p class="note">Save your card with a screenshot. Show the back at every session.<br><a id="statusLink" href="#">Check my membership status</a></p>
+  </section>
 
-    <div class="face founding" id="fnd" hidden>
-      <div class="frame">
-        <div class="ghost" id="ghost"></div>
-        <div class="row">
-          <img class="wordmark" src="../assets/wordmark-chrome.png" alt="Heart of Fire">
-          <div><div class="club">RUN CLUB</div><div class="label" style="text-align:right;color:#C9CED6">FOUNDING 20</div></div>
-        </div>
-        <div class="mid">
-          <img class="photo" id="fPhoto" alt="" src="data:image/gif;base64,R0lGODlhAQABAAAAACH5BAEKAAEALAAAAAABAAEAAAICTAEAOw==">
-          <div class="info">
-            <div class="small" style="color:#C9CED6">FOUNDING MEMBER</div>
-            <div class="name" id="fName"></div>
-            <div class="nums"><div class="num" id="fNum"></div><div class="fnum" id="fFounding"></div></div>
-            <div class="solid">ONE OF TWENTY</div>
-          </div>
-        </div>
-        <div class="row foot"><div>BELIEVE · BEGIN · BURN · BECOME</div><div>POWERED BY ESCAPAID</div></div>
-      </div>
-    </div>
-  </div>
+  <section id="gate" class="panel gate" hidden></section>
 
-  <div class="card" id="cardBack" hidden>
-    <div class="face back">
-      <img class="flame" src="../assets/flame-white.png" alt="">
-      <div class="qr"><img id="qr" alt="Member QR code"></div>
-      <div class="copy">
-        <div class="headline">Scan at every session.</div>
-        <div class="body">This card is personal to its holder. The team scans it to check your membership is active.</div>
-        <div class="meta"><div>HEART OF FIRE · TRINIDAD AND TOBAGO</div><div>FOUND THIS CARD? MESSAGE @HOFCLUB.OFFICIAL</div></div>
-        <div class="rule"></div>
-      </div>
-    </div>
-  </div>
-
-  <p class="note" id="note" hidden>Save your card with a screenshot. Show the back at every session.<br><a id="statusLink" href="#">Check my membership status</a></p>
+  <section id="specsView" hidden style="display:flex;flex-direction:column;gap:18px">
+    <div class="hero fin" id="hero"></div>
+    <div class="stats" id="stats"></div>
+    <div class="panel" id="compP" hidden></div>
+    <div class="panel priv" id="focusP"></div>
+    <div class="panel" id="focusPick" hidden></div>
+    <div class="panel" id="pbPanel"></div>
+    <div class="panel"><h3>Sessions</h3><div class="dots" id="dots"></div>
+      <div class="legend"><span style="--c:#fff;--b:#fff">Present</span><span style="--c:transparent;--b:#3a3a3a">Missed</span><span id="dutyLeg" style="--c:var(--red);--b:#fff">On duty</span></div></div>
+    <div class="panel" id="helpPanel" hidden></div>
+    <div class="panel"><h3>History</h3><div id="chart"></div></div>
+    <details class="panel coll" id="heatP"><summary><h3>Heat</h3><span class="sm" id="heatSm"></span></summary><div id="heatBody"></div></details>
+    <details class="panel coll" id="rankHow"><summary><h3>How ranks work</h3><span class="sm">Your time standards</span></summary><div id="rankBody"></div></details>
+    <details class="panel coll"><summary><h3>All badges</h3><span class="sm" id="badgeCount"></span></summary><div id="badges"></div><p class="hint">Badges come only from real logged data: sign-ins, benchmarks and official results.</p></details>
+    <div class="panel priv"><div class="k">Background <small>Add your own photo behind your Specs and share image. It stays on this phone.</small></div><button class="ghostbtn" id="bgBtn">Add photo</button><input type="file" id="bgFile" accept="image/*" hidden></div>
+    <div class="panel priv"><div class="k">Weight <span class="mont" id="wtNow" style="font-weight:800;color:#fff;margin-left:6px"></span><small>Private and kept only on this phone. It only shows on a share image if you turn it on.</small>
+      <div class="wtrow"><input class="fld" id="wtIn" inputmode="decimal" placeholder="kg" aria-label="Weight in kg"><button class="ghostbtn" id="wtSave">Save</button></div></div></div>
+    <div><button class="btn" id="shareBtn">Share my specs</button>
+      <div class="share" id="share">
+        <div class="togs" id="fmt"><button class="tog on" data-f="916">Story 9:16</button><button class="tog" data-f="45">Post 4:5</button></div>
+        <div class="shimg fin" id="shimg"></div>
+        <div class="togs" id="togs"><button class="tog on" data-k="name">Name</button><button class="tog on" data-k="num">Number</button><button class="tog on" data-k="photo">Photo</button><button class="tog" data-k="weight">Weight</button></div>
+        <div class="acts"><button class="pri" id="sendBtn">Share</button><button id="saveBtn">Save image</button></div>
+        <p class="note" id="shNote" style="margin-top:10px">Weight is off unless you turn it on.</p>
+      </div></div>
+    <div class="panel" id="teamP" hidden></div>
+    <div style="text-align:center"><button class="ghostbtn" id="lockBtn">Lock Specs on this phone</button></div>
+    <div class="foot2">Specs update on the 3rd of each month<br>Heart of Fire · Powered by Escapaid</div>
+  </section>
 </main>
-
+<script src="../assets/hof.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
 <script>
-  // The HOF script's Web app URL (the /exec link). Only change this if the deployment link ever changes.
-  var API_URL = 'https://script.google.com/macros/s/AKfycbzHBD01gUyM6oNEaT3wwxbyH5_n4590y8AdHduJ-TRCKZXuKxFt-5qaOXFMQ6krSAFNVQ/exec';
-  var CHECK_PAGE = 'https://hofclub.github.io/check/';
+const ID = new URLSearchParams(location.search).get('id') || '';
+let CARD = null, SP = null, LAD_SEL = null, TAB = 'card';
+const OPT = { name: 1, num: 1, photo: 1, weight: 0, f: '916' };
+const MON = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
+const DOW = ['Sun','Mon','Tue','Wed','Thu','Fri','Sat'];
+const nice = ymd => { if (!ymd) return ''; const d = new Date(ymd + 'T12:00:00'); return DOW[d.getDay()] + ' ' + d.getDate() + ' ' + MON[d.getMonth()]; };
+const pinKey = 'hofpin_' + ID, ladKey = 'hoflad_' + ID, bgKey = 'hofbg_' + ID, wtKey = 'hofwt_' + ID;
+function fail(t, x) { $('msg').hidden = false; $('msg').innerHTML = '<b>' + esc(t) + '</b>' + esc(x); }
 
-  function $(id) { return document.getElementById(id); }
-  function fail(title, text) { $('msg').innerHTML = ''; var b = document.createElement('b'); b.textContent = title; $('msg').appendChild(b); $('msg').appendChild(document.createTextNode(text)); }
+// ---------- card ----------
+function drawCard() {
+  if (!CARD) return;
+  const L = LAD_SEL || CARD.ladder;
+  let rank = CARD.rank;
+  if (SP && SP.snap && L !== SP.focus) rank = SP.snap.ranks[L];
+  else if (SP && SP.snap) rank = SP.snap.ranks[SP.focus];
+  const hide = CARD.type === 'EXEC' && SP && SP.compete === 'OFF';
+  const c = hofCard({ type: CARD.type, first: CARD.first, num: CARD.num, photo: CARD.photo, founding: CARD.founding, role: CARD.role, rank: hide ? -1 : rank, id: ID });
+  $('cardF').innerHTML = c.front; $('cardB').innerHTML = c.back;
+  $('statusLink').href = CHECK_PAGE + '?id=' + encodeURIComponent(ID);
+}
 
-  var id = new URLSearchParams(location.search).get('id') || '';
-  if (!id) {
-    fail('CARD NOT FOUND', 'This link is missing its member code. Please use the link from your welcome message.');
-  } else {
-    fetch(API_URL + '?format=json&id=' + encodeURIComponent(id), { credentials: 'omit' })
-      .then(function (r) { return r.json(); })
-      .then(function (d) {
-        if (!d || !d.found) { fail('CARD NOT FOUND', 'We couldn\'t find this card. Please check with the HOF team.'); return; }
-        var type = String(d.type || 'MEMBER');
-        var first = String(d.first || '');
-        var num = String(d.num || '');
-        if (type === 'FOUNDING') {
-          $('std').hidden = true; $('fnd').hidden = false;
-          var f = String(d.founding || '').replace(/^#/, '');
-          $('ghost').textContent = f;
-          $('fName').textContent = first;
-          $('fNum').textContent = num;
-          $('fFounding').textContent = f ? 'FOUNDING #' + f : 'FOUNDING';
-          if (d.photo) { $('fPhoto').src = d.photo; $('fPhoto').alt = 'Member photo'; }
-        } else {
-          var team = (type === 'VOLUNTEER' || type === 'EXEC');
-          var exec = (type === 'EXEC');
-          if (team) $('std').classList.add(exec ? 'exec' : 'team');
-          $('cardLabel').textContent = exec ? 'EXECUTIVE CARD' : team ? 'VOLUNTEER CARD' : 'MEMBER CARD';
-          $('nameLabel').textContent = team ? 'TEAM' : 'MEMBER';
-          $('badge').textContent = type === 'VOLUNTEER' ? 'TEAM · VOLUNTEER' : exec ? 'TEAM · EXECUTIVE' : 'MEMBER';
-          $('name').textContent = first;
-          $('num').textContent = num;
-          if (d.photo) { $('photo').src = d.photo; $('photo').alt = 'Member photo'; }
-        }
-        var check = CHECK_PAGE + '?id=' + encodeURIComponent(id);
-        $('qr').src = 'https://api.qrserver.com/v1/create-qr-code/?size=400x400&margin=12&data=' + encodeURIComponent(check);
-        $('statusLink').href = check;
-        $('msg').hidden = true;
-        $('cardFront').hidden = false; $('cardBack').hidden = false; $('note').hidden = false;
-      })
-      .catch(function () { fail('TRY AGAIN', 'Couldn\'t load your card. Check your signal and refresh.'); });
+// ---------- tabs and PIN gate ----------
+document.querySelectorAll('#tabs button').forEach(b => b.onclick = () => { TAB = b.dataset.t; history.replaceState(null, '', TAB === 'specs' ? '#specs' : location.pathname + location.search); show(); });
+function show() {
+  document.querySelectorAll('#tabs button').forEach(b => b.classList.toggle('on', b.dataset.t === TAB));
+  $('cardView').hidden = TAB !== 'card';
+  if (TAB === 'card') { $('gate').hidden = true; $('specsView').hidden = true; return; }
+  if (SP) { $('gate').hidden = true; $('specsView').hidden = false; return; }
+  const saved = store(pinKey);
+  if (saved) unlock(saved, true); else gate('enter');
+}
+const lockIc = '<div class="ic"><svg width="20" height="22" viewBox="0 0 20 22"><rect x="2" y="10" width="16" height="11" rx="2" fill="none" stroke="#C9CED6" stroke-width="2"/><path d="M6 10V7a4 4 0 0 1 8 0v3" fill="none" stroke="#C9CED6" stroke-width="2"/></svg></div>';
+const pinBox = (id, ph, lab) => `<div class="pwrap pinw"><input class="pin" id="${id}" type="password" inputmode="numeric" maxlength="6" placeholder="${ph}" aria-label="${lab}" autocomplete="off"><button type="button" class="eye" data-for="${id}" aria-label="Show PIN">Show</button></div>`;
+function gate(mode, info) {
+  $('specsView').hidden = true; const g = $('gate'); g.hidden = false;
+  if (mode === 'loading') { g.innerHTML = lockIc + '<h2>Opening your Specs</h2><p><span class="spin"></span></p>'; return; }
+  if (mode === 'nopin') {
+    g.innerHTML = lockIc + `<h2>Your Specs are private</h2><p>To open them, set a PIN from the link in your email. It came with "Your specs are in" (or your team PIN email).</p><div class="err" id="gerr"></div><button class="btn" id="sendLink">Email me a PIN link</button><p style="font-size:12px;color:var(--mute)">Opening your card link on its own can't set a PIN, so nobody who scans your card can lock you out.</p>`;
+    $('sendLink').onclick = forgot; return;
   }
+  if (mode === 'sent') { g.innerHTML = lockIc + `<h2>Check your email</h2><p>${esc(info || '')}</p><button class="link" id="back">Back</button>`; $('back').onclick = () => gate('enter'); return; }
+  g.innerHTML = lockIc + `<h2>Enter your PIN</h2><p>Your Specs are private to you.</p>${pinBox('p1', '••••', 'PIN')}<div class="err" id="gerr"></div><button class="btn" id="unl">Unlock</button><button class="link" id="forgot">Forgot PIN?</button>`;
+  $('unl').onclick = () => unlock($('p1').value, false);
+  $('p1').onkeydown = e => { if (e.key === 'Enter') unlock($('p1').value, false); };
+  $('forgot').onclick = forgot;
+  eyes(g);
+}
+function eyes(root) { root.querySelectorAll('.eye').forEach(b => b.onclick = () => { const i = $(b.dataset.for); const s = i.type === 'password'; i.type = s ? 'text' : 'password'; b.textContent = s ? 'Hide' : 'Show'; b.setAttribute('aria-label', s ? 'Hide PIN' : 'Show PIN'); }); }
+function forgot() { gate('loading'); hofApi('forgot', { id: ID }).then(d => gate('sent', d.message)).catch(e => { gate('enter'); $('gerr').textContent = e.message; }); }
+function unlock(pin, silent) {
+  if (!/^\d{4,6}$/.test(String(pin || ''))) { if (!silent) $('gerr').textContent = 'Use 4 to 6 numbers.'; else gate('enter'); return; }
+  gate('loading');
+  hofApi('specs', { id: ID, pin: pin }).then(d => {
+    if (d.needPin) { store(pinKey, null); gate('nopin'); return; }
+    store(pinKey, pin); SP = d; SP._pin = pin;
+    LAD_SEL = store(ladKey) || d.focus;
+    render(); drawCard(); show();
+  }).catch(e => { store(pinKey, null); gate('enter'); $('gerr').textContent = e.message; });
+}
+$('lockBtn').onclick = () => { store(pinKey, null); SP = null; show(); };
+
+// ---------- Specs ----------
+const ladEvent = L => { const s = SP.snap; if (L === 'sprint') return SP.sprintEvent || (s && s.best.sprint && s.best.sprint.event) || '100 m';
+  if (L === 'middle') return (s && s.best.middle && s.best.middle.event) || middleEv(Math.max(0, curRank('middle')));
+  return (s && s.best.long && s.best.long.event) || '10K'; };
+function curRank(L) { const s = SP.snap; if (s) return s.ranks[L]; const p = SP.placed && SP.placed[L]; return p === '' || p == null ? -1 : +p; }
+function nextTarget(L, ri) {
+  const ni = Math.min(15, ri + 1); const ev = L === 'middle' ? middleEv(ni <= 7 && ri < 3 ? Math.max(ri, 0) : ri) : ladEvent(L);
+  const col = SP_STD[sexKey(SP.sex)][ev]; return { ni, ev, t: col && col[ni] != null ? fmtT(col[ni], ev) : '' };
+}
+function render() {
+  const s = SP.snap, L = LAD_SEL, ri = curRank(L), hasR = ri >= 0, r = RANKS[Math.max(0, ri)], k = hasR ? r[0] : 'b';
+  const hide = SP.exec && SP.compete === 'OFF';
+  const H = s ? s.heat : 0, hi = heatLv(H), nx = HEATLV[hi + 1];
+  const label = s ? s.label : 'Before your first Specs';
+  const evL = ladEvent(L);
+  const hero = $('hero');
+  let target = '';
+  if (!hide) {
+    if (ri === 15) target = `<div class="eyebrow">Hold Heart of Fire</div><div class="req" style="margin-top:8px"><span>90% sessions</span><span>Heart of Fire time in the last 3 months</span><span>Race or podium this quarter</span></div>`;
+    else { const nt = nextTarget(L, Math.max(ri, 0)); target = `<div class="eyebrow">Next · ${RANKS[nt.ni][2]}</div><div class="mont" style="font-weight:800;font-size:22px;margin:6px 0 10px">Run ${nt.t} <span style="font-size:13px;color:var(--chrome);font-weight:600">on ${nt.ev}</span></div><div class="req"><span class="${H >= 60 ? 'ok' : ''}">Ember Heat this month</span><span>${nt.ev} in ${nt.t} or faster</span></div>`; }
+  }
+  const placedNote = !s && SP.placedText ? `<div class="eyebrow t" style="margin-top:10px;color:#fff">Placed · confirmed at your first benchmark</div>` : (s && s.placed && s.placed[L] ? `<div class="eyebrow t" style="margin-top:10px;color:#fff">Placed · confirmed at your first result</div>` : '');
+  hero.innerHTML = `<div class="top"><div><div class="eyebrow t">${esc(label)} specs</div><div class="eyebrow t" style="margin-top:10px;color:#fff">${LAD[L]}${evL ? ' · ' + evL : ''}</div><div class="rank t" style="margin-top:6px">${hide ? 'Not competing' : hasR ? r[2] : 'Not ranked yet'}</div><div class="pips" style="margin-top:10px">${hasR && !hide ? pipsHtml(r[0], r[1]) : ''}</div>${ri === 15 && s && s.hofMonths[L] ? `<div class="eyebrow t" style="margin-top:10px;color:#fff">Held ${s.hofMonths[L]} month${s.hofMonths[L] > 1 ? 's' : ''}</div>` : ''}${placedNote}</div><img class="logo" src="${FLAME}" alt="HOF"></div>
+   ${target ? `<div class="heat glass">${target}</div>` : ''}
+   <div class="glass heatm"><div style="display:flex;align-items:center;gap:12px">${flameSvg(hi, 26)}<div style="flex:1"><div style="display:flex;justify-content:space-between;align-items:baseline"><span class="mont" style="font-weight:900;font-size:18px;letter-spacing:.06em;text-transform:uppercase">${HEATLV[hi][0]}</span><span class="mont" style="font-weight:800">${H} <small style="color:var(--chrome);font-weight:600">HEAT</small></span></div><div class="bar hb"><b style="width:${nx ? Math.round((H - HEATLV[hi][1]) / (nx[1] - HEATLV[hi][1]) * 100) : 100}%;background:${HCOL[Math.max(1, hi)]}"></b></div><div style="font-size:12px;color:var(--chrome)">${nx ? (nx[1] - H) + ' to ' + nx[0] : 'Top level'} · ${s ? 'last month' : 'starts with your first session'}</div></div></div></div>
+   <div class="glass lrows">${Object.keys(LAD).map(x => { const i = curRank(x), rr = i < 0 ? null : RANKS[i]; return `<button class="lrow ${x === L ? 'on' : ''}" data-l="${x}"><span class="eyebrow" style="line-height:1.4">${LADSHORT[x]}<br><span style="color:#fff;letter-spacing:.1em">${x === 'sprint' ? (SP.sprintEvent || '') : ''}</span></span><span class="mont" style="font-weight:800;font-size:13px">${hide ? '·' : rr ? rr[2] : 'Not ranked yet'}</span><span class="pips">${rr && !hide ? pipsHtml(rr[0], rr[1]) : ''}</span></button>`; }).join('')}<div style="display:flex;justify-content:space-between;align-items:center;gap:8px;padding:4px 2px 0;flex-wrap:wrap"><span style="font-size:11px;color:var(--mute)">Tap a ladder to show it on your card</span><span style="font-size:11px;color:var(--mute)">Training focus: <b style="color:#fff">${LADSHORT[SP.focus]}</b></span></div></div>
+   <div><div class="eyebrow t" style="margin-bottom:8px">This month</div><div class="chips">${s && s.month.length ? chips(s.month) : '<span style="color:var(--mute);font-size:13px">Badges you earn show here</span>'}</div></div>`;
+  setFin(hero, k); applyBg(hero);
+  hero.querySelectorAll('.lrow').forEach(b => b.onclick = () => { LAD_SEL = b.dataset.l; store(ladKey, LAD_SEL); render(); drawCard(); });
+  // stats
+  const hist = (SP.hist[L] || []);
+  const last = hist[hist.length - 1], prev = hist[hist.length - 2];
+  const pb = s && s.pbs[evL];
+  const thisMonth = s && s.best[L];
+  const sessTxt = s ? `<div class="v">${s.sessions}<small> / ${s.held || s.sessions}</small></div><div class="s">${s.totalSessions} since you joined</div>` : `<div class="v" style="color:var(--mute)">—</div><div class="s">Starts at your first session</div>`;
+  let chg = '';
+  if (last && prev && last.b.event === prev.b.event && last.b.s < prev.b.s) chg = `<div class="v go">${fmtDiff(last.b.s - prev.b.s, last.b.event)}</div><div class="s">faster than ${esc(prev.label.replace(/ \d{4}$/, ''))}</div>`;
+  $('stats').innerHTML = `<div class="stat"><div class="eyebrow">Sessions</div>${sessTxt}</div>` +
+    (thisMonth ? `<div class="stat"><div class="eyebrow">${L === 'long' ? 'Best race' : 'Best'}</div><div class="v">${thisMonth.t}</div><div class="s">${thisMonth.event} · ${nice(thisMonth.date)}</div></div>` : `<div class="stat"><div class="eyebrow">${L === 'long' ? 'Best race' : 'Best'}</div><div class="v" style="color:var(--mute)">—</div><div class="s">No ${evL} result this month</div></div>`) +
+    `<div class="stat"><div class="eyebrow">Change</div>${chg || '<div class="v" style="color:var(--mute)">—</div><div class="s">Shows after two results</div>'}</div>`;
+  const evs = LAD_EV[L].filter(e => s && s.pbs[e]);
+  $('pbPanel').innerHTML = `<h3>Personal best · ${LADSHORT[L]}</h3>` + (evs.length ? evs.map(e => { const p = s.pbs[e]; const isNew = s.newPbs.some(n => n.event === e); return `<div class="pb"><div><div class="t">${p.t}</div><div style="color:var(--chrome);margin-top:6px;font-size:13px">${e} · set ${nice(p.date)}</div></div>${isNew ? '<span class="tag">New PB</span>' : ''}</div>`; }).join('') :
+    `<div class="empty"><b>NOT SET YET</b>${L === 'long' ? 'Run a 10K, half or marathon and send an exec the official result.' : 'Your first ' + evL + ' time becomes your first PB.'}</div>`);
+  // sessions
+  const dates = s ? s.sessDates : [];
+  $('dots').style.gridTemplateColumns = `repeat(${Math.min(8, Math.max(dates.length, 4))},1fr)`;
+  $('dots').innerHTML = dates.length ? dates.map(x => `<div class="d ${x.p ? 'p' : ''}"><i class="${x.duty ? 'dt' : ''}"></i>${nice(x.d).replace(/^\w+ /, '')}</div>`).join('') : '<div style="grid-column:1/-1;color:var(--mute);font-size:13px">Your sessions show here after your first month.</div>';
+  const team = SP.type === 'VOLUNTEER' || SP.type === 'EXEC';
+  $('dutyLeg').hidden = !team; $('helpPanel').hidden = !team;
+  if (team) { const h = s ? s.dutyDays : 0, n = SP.helpedTarget;
+    $('helpPanel').innerHTML = `<h3>Helped out last month</h3><div class="pb"><div><div class="t">${h}${n ? `<span style="font-size:.4em;color:var(--mute)"> of ${n}</span>` : ''}</div><div style="color:var(--chrome);margin-top:6px;font-size:13px">Training nights and special Sundays both count</div></div>${n ? `<div style="flex:1;min-width:140px;max-width:220px"><div class="bar"><b style="width:${Math.min(100, h / n * 100)}%"></b></div><div style="font-size:12px;color:var(--mute)">${SP.excused ? 'Excused this month' : h >= n ? 'Done for the month' : (n - h) + ' more to keep your volunteer place'}</div></div>` : ''}</div>`; }
+  // history chart
+  if (hist.length) { const xs = hist.slice(-6); const ss = xs.map(x => x.b.s); const mx = Math.max(...ss), mn = Math.min(...ss);
+    $('chart').innerHTML = `<div class="eyebrow" style="margin-bottom:8px">${LADSHORT[L]} · best each month</div><div class="chart">${xs.map((x, i) => `<div class="col"><em>${x.b.t}</em><b class="${i === xs.length - 1 ? 'cur' : ''}" style="height:${mx === mn ? 100 : Math.round(55 + 45 * (mx - x.b.s) / (mx - mn))}%"></b>${esc(x.label.replace(/ \d{4}$/, '').replace('January–February', 'Jan–Feb').slice(0, 7))}</div>`).join('')}</div><p class="hint">Taller bar means faster. Red is the latest month. Tap another ladder above to see its history.</p>`; }
+  else $('chart').innerHTML = `<div class="empty"><b>NO ${LADSHORT[L]} RESULTS YET</b>${L === 'long' ? 'Your history starts with your first 10K, half or marathon.' : 'Your history starts with your first ' + evL + ' time.'}</div>`;
+  // heat
+  $('heatSm').textContent = H + ' · ' + HEATLV[hi][0];
+  $('heatBody').innerHTML = `<table class="htbl">${(s ? s.heatRows : []).map(x => `<tr><td>${esc(x[0])}</td><td>+${x[1]}</td></tr>`).join('')}<tr><td style="color:#fff">Total</td><td>${H}</td></tr></table>
+   <div class="hlv">${HEATLV.map((l, j) => `<div class="${j === hi ? 'on' : ''}">${flameSvg(j, 16)}<br>${l[0]}<br>${l[1]}+</div>`).join('')}</div>
+   <p class="hint">Heat is effort: every session, benchmark, PB, Challenge Day, race and time you help out adds to it, whatever your speed. It resets each month. You need Ember (60) in a month to move up a rank. Lifetime Heat: <b style="color:#fff">${s ? s.lifeHeat : 0}</b>.</p>
+   <details style="margin-top:6px"><summary style="cursor:pointer;font-size:12px;color:var(--chrome)">What earns Heat</summary><table class="htbl" style="margin-top:8px"><tr><td>Session attended or on duty</td><td>10</td></tr><tr><td>Special Sunday</td><td>10</td></tr><tr><td>Benchmark run</td><td>15</td></tr><tr><td>Challenge Day finished</td><td>20</td></tr><tr><td>1st / 2nd / 3rd at Challenge Day</td><td>+15 / 10 / 5</td></tr><tr><td>New PB</td><td>25</td></tr><tr><td>Race finished with the team</td><td>30</td></tr><tr><td>Full month of sessions</td><td>+40</td></tr></table><p class="hint">Racing on your own? Send an exec the official results link, or a screenshot of the official result. A 5K counts for Middle, a 10K, half or marathon for Long, and a track meet in your sprint event for Sprint, plus PBs and race badges. Strava and watch times don't count. The 30 race Heat is for team races.</p></details>`;
+  // how ranks work
+  const sx = sexKey(SP.sex), evs2 = LAD_EV[L];
+  $('rankBody').innerHTML = `<p class="hint" style="margin-top:0">${SP.sex ? (sx === 'W' ? "Women's" : "Men's") + ' standards' : 'Standards'} for ${LAD[L]}. Hit a time and the rank is yours on the 1st, as long as you reached Ember Heat that month.${L === 'middle' ? ' Beginners run 1.6 km, Intermediates 3 km, Advanced 5 km. A road 5K counts too.' : L === 'sprint' ? ' Your rank comes from your chosen event.' : ' Official results only.'}</p><div class="tw"><table class="tbl"><tr><th>Rank</th>${evs2.map(e => `<th>${e}</th>`).join('')}</tr>${RANKS.map((rr, i) => `<tr class="${i === ri ? 'me' : ''}"><td>${rr[2]}</td>${evs2.map(e => `<td>${i === 0 ? 'Start' : fmtT(SP_STD[sx][e][i], e)}</td>`).join('')}</tr>`).join('')}</table></div>`;
+  // badges
+  const earned = s ? s.earned : {};
+  $('badgeCount').textContent = Object.keys(earned).filter(b => ICON[b]).length + ' earned';
+  $('badges').innerHTML = CATS.filter(([c]) => (c !== 'Team' || team) && (c !== 'Leadership' || SP.exec)).map(([c, ks]) => `<div class="bcat">${c}</div><div class="badges">` + ks.map(b => { const e = earned[b]; return `<div class="bd ${e ? '' : 'lock'}"><span class="sh">${SHORT[b] || ''}</span><svg viewBox="0 0 34 34">${ICON[b] || ''}</svg><div class="n">${NAME[b] || b}</div><div class="m">${e ? 'Earned · ' + esc(/^\d{4}-\d{2}-\d{2}$/.test(e) ? nice(e) : e) : HOW[b] || ''}</div></div>`; }).join('') + '</div>').join('');
+  focusUI(); teamUI(); drawShare(); weightUI();
+}
+function focusUI() {
+  const w = SP.focusWindow;
+  const txt = w.open ? 'Open now, until the 7th' : w.used ? 'Changed this month · next change opens ' + nice(w.next) : 'Next change opens ' + nice(w.next);
+  $('focusP').innerHTML = `<div class="k">Training focus <span class="mont" style="font-weight:800;color:#fff;margin-left:6px">${LAD[SP.focus]}${SP.focus === 'sprint' && SP.sprintEvent ? ' · ' + SP.sprintEvent : ''}</span><small>${txt}. Your focus only sets your training group. You can still run every benchmark and climb all three ladders.</small></div><button class="ghostbtn" id="chgF" ${w.open ? '' : 'disabled style="opacity:.45"'}>Change</button>`;
+  $('chgF').onclick = () => { const fp = $('focusPick'); fp.hidden = !fp.hidden; let pick = SP.focus, evp = SP.sprintEvent || '100 m';
+    const draw = () => { fp.innerHTML = `<h3>Change training focus</h3><div class="opts">${Object.keys(LAD).map(x => `<button class="opt ${pick === x ? 'on' : ''}" data-p="${x}">${LADSHORT[x]}</button>`).join('')}</div>${pick === 'sprint' ? `<p class="hint" style="text-align:center">Your sprint event</p><div class="opts">${['100 m', '200 m', '400 m'].map(e => `<button class="opt ${evp === e ? 'on' : ''}" data-e="${e}">${e}</button>`).join('')}</div>` : ''}<p class="hint" style="text-align:center">This is your one change this month. It starts at your next session.</p><div class="err" id="ferr"></div><button class="btn" id="cfm">Confirm change</button>`;
+      fp.querySelectorAll('[data-p]').forEach(b => b.onclick = () => { pick = b.dataset.p; draw(); }); fp.querySelectorAll('[data-e]').forEach(b => b.onclick = () => { evp = b.dataset.e; draw(); });
+      fp.querySelector('#cfm').onclick = () => { $('cfm').disabled = true; hofApi('focus', { id: ID, pin: SP._pin, focus: pick, event: evp }).then(() => { SP.focus = pick; if (pick === 'sprint') SP.sprintEvent = evp; SP.focusWindow = { open: false, used: true, next: SP.focusWindow.next }; fp.hidden = true; render(); }).catch(e => { $('ferr').textContent = e.message; $('cfm').disabled = false; }); }; };
+    draw(); };
+}
+function teamUI() {
+  const team = SP.type === 'VOLUNTEER' || SP.type === 'EXEC';
+  $('compP').hidden = !SP.exec;
+  if (SP.exec) { const on = SP.compete !== 'OFF', day = new Date().getDate();
+    $('compP').innerHTML = `<div class="sw2"><div><h3 style="margin:0 0 6px">Compete</h3><div style="font-size:13px;color:var(--chrome)">${on ? 'On. You climb the ladders on the same standards as everyone.' : 'Off. No ranks, no benchmark reminders, nothing shown as missed.'}</div><div style="font-size:12px;color:var(--mute);margin-top:4px">Switch it from the 1st to the 7th.</div><div class="err" id="cerr"></div></div><button class="switch ${on ? 'on' : ''}" id="cmpS" aria-label="Compete" ${day <= 7 ? '' : 'disabled'}></button></div>`;
+    $('cmpS').onclick = () => hofApi('compete', { id: ID, pin: SP._pin, on: !on }).then(d => { SP.compete = d.compete; render(); drawCard(); }).catch(e => $('cerr').textContent = e.message); }
+  $('teamP').hidden = !team;
+  if (team) $('teamP').innerHTML = `<div style="display:flex;justify-content:space-between;align-items:center;gap:10px;flex-wrap:wrap"><div><h3 style="margin:0 0 6px">Team</h3><div style="font-size:13px;color:var(--chrome)">Sign people in, log results${SP.exec ? ', Exec tools and Club pulse' : ''}.</div></div><div style="display:flex;gap:8px;flex-wrap:wrap"><a class="ghostbtn" href="../team/" style="text-decoration:none">Team page</a>${SP.guide ? `<a class="ghostbtn" href="${SP.guide}" target="_blank" rel="noopener" style="text-decoration:none">Team guide ↗</a>` : ''}</div></div>`;
+}
+// ---------- background, weight, share ----------
+function applyBg(el) { const bg = store(bgKey); el.classList.toggle('hasbg', !!bg); el.style.backgroundImage = bg ? `url(${bg})` : ''; let sc = el.querySelector(':scope>.scrim'); if (bg) { if (!sc) { sc = document.createElement('div'); sc.className = 'scrim'; el.prepend(sc); } } else if (sc) sc.remove(); }
+$('bgBtn').onclick = () => { if (store(bgKey)) { store(bgKey, null); $('bgBtn').textContent = 'Add photo'; render(); } else $('bgFile').click(); };
+$('bgFile').onchange = e => { const f = e.target.files[0]; if (!f) return; const img = new Image(); img.onload = () => { const c = document.createElement('canvas'); const sc = Math.min(1, 1080 / img.width); c.width = img.width * sc; c.height = img.height * sc; c.getContext('2d').drawImage(img, 0, 0, c.width, c.height); store(bgKey, c.toDataURL('image/jpeg', .8)); $('bgBtn').textContent = 'Remove photo'; render(); }; img.src = URL.createObjectURL(f); };
+function weightUI() { let w = []; try { w = JSON.parse(store(wtKey) || '[]'); } catch (e) {} $('wtNow').textContent = w.length ? w[w.length - 1][1] + ' kg' : ''; $('bgBtn').textContent = store(bgKey) ? 'Remove photo' : 'Add photo'; }
+$('wtSave').onclick = () => { const v = parseFloat($('wtIn').value); if (!(v > 25 && v < 300)) return; let w = []; try { w = JSON.parse(store(wtKey) || '[]'); } catch (e) {} w.push([new Date().toISOString().slice(0, 10), Math.round(v * 10) / 10]); store(wtKey, JSON.stringify(w.slice(-24))); $('wtIn').value = ''; weightUI(); drawShare(); };
+function drawShare() {
+  const s = SP.snap, L = LAD_SEL, ri = curRank(L), r = RANKS[Math.max(0, ri)], k = ri >= 0 ? r[0] : 'b', hide = SP.exec && SP.compete === 'OFF';
+  const el = $('shimg'); el.classList.toggle('f45', OPT.f === '45');
+  const rl = hide ? '' : ri >= 0 ? r[2].toUpperCase() : '';
+  const who = (OPT.photo || OPT.name || OPT.num) ? `<div class="who">${OPT.photo && CARD.photo ? `<div class="ph"><img src="${esc(CARD.photo)}" alt="" style="width:100%;height:100%;object-fit:cover"></div>` : ''}<div>${OPT.name ? `<div class="nm t">${esc(CARD.first)}</div>` : ''}${OPT.num ? `<div class="no t">${esc(CARD.num)}</div>` : ''}${rl ? `<div class="lb t" style="margin-top:8px;color:#fff">${rl} · ${LADSHORT[L]}</div><div class="pips" style="margin-top:6px">${pipsHtml(r[0], r[1])}</div>` : ''}</div></div>` : (rl ? `<div><div class="lb t" style="color:#fff">${rl}</div><div class="pips" style="margin-top:6px">${pipsHtml(r[0], r[1])}</div></div>` : '');
+  let w = []; try { w = JSON.parse(store(wtKey) || '[]'); } catch (e) {}
+  const wd = w.length > 1 ? Math.round((w[w.length - 1][1] - w[0][1]) * 10) / 10 : 0;
+  const wt = OPT.weight && w.length ? `<div class="lb" style="margin-top:10px;letter-spacing:.14em">WEIGHT ${w[w.length - 1][1]} KG${wd < 0 ? ` · <span>${String(wd).replace('-', '−')} KG</span>` : ''}</div>` : '';
+  const pb = s && s.newPbs.find(n => LAD_EV[L].indexOf(n.event) > -1);
+  const hist = SP.hist[L] || [], last = hist[hist.length - 1], prev = hist[hist.length - 2];
+  const chg = last && prev && last.b.event === prev.b.event && last.b.s < prev.b.s ? fmtDiff(last.b.s - prev.b.s, last.b.event) : '';
+  const H = s ? s.heat : 0, hi = heatLv(H);
+  el.innerHTML = `<div style="display:flex;justify-content:space-between;align-items:flex-start"><div><div class="mont t" style="font-weight:800;font-size:13px;letter-spacing:.24em">HOF RUN CLUB</div><div class="lb t" style="margin-top:6px">${esc((s ? s.label : '').toUpperCase())} SPECS</div></div><img class="logo" src="${FLAME}" alt="HOF"></div>
+   ${who}
+   <div class="stbox glass"><div class="big">${s ? s.sessions : 0}<span style="font-size:16px;color:var(--chrome)"> SESSIONS</span></div>${chg ? `<div class="go mont" style="font-weight:800;font-size:15px;margin-top:10px">${chg} FASTER</div>` : ''}${pb ? `<div class="big" style="font-size:42px;margin-top:4px">${pb.t}<span style="font-size:12px;letter-spacing:.1em;color:var(--red)"> NEW PB · ${pb.event.toUpperCase()}</span></div>` : ''}${wt}</div>
+   <div><div class="lb t" style="margin-bottom:8px;display:flex;align-items:center;gap:8px">${flameSvg(hi, 12)}${HEATLV[hi][0].toUpperCase()} · ${H} HEAT</div><div class="lb t" style="margin-bottom:8px">THIS MONTH</div><div class="chips">${s ? chips(s.month, 4) : ''}</div></div>
+   <div class="lb t">BELIEVE · BEGIN · <span style="color:var(--red)">BURN</span> · BECOME</div>`;
+  setFin(el, k); applyBg(el);
+}
+$('shareBtn').onclick = () => $('share').classList.toggle('open');
+document.querySelectorAll('#fmt .tog').forEach(b => b.onclick = () => { OPT.f = b.dataset.f; document.querySelectorAll('#fmt .tog').forEach(x => x.classList.toggle('on', x === b)); drawShare(); });
+document.querySelectorAll('#togs .tog').forEach(b => b.onclick = () => { OPT[b.dataset.k] = OPT[b.dataset.k] ? 0 : 1; b.classList.toggle('on', !!OPT[b.dataset.k]); $('shNote').textContent = OPT.weight ? 'Weight is on for this image only.' : 'Weight is off unless you turn it on.'; drawShare(); });
+function shareBlob() { return html2canvas($('shimg'), { backgroundColor: '#000', scale: 3, useCORS: true }).then(c => new Promise(res => c.toBlob(res, 'image/png'))); }
+$('sendBtn').onclick = () => shareBlob().then(b => { const f = new File([b], 'hof-specs.png', { type: 'image/png' }); if (navigator.canShare && navigator.canShare({ files: [f] })) return navigator.share({ files: [f], title: 'My HOF specs' }); save(b); }).catch(() => {});
+$('saveBtn').onclick = () => shareBlob().then(save);
+function save(b) { const a = document.createElement('a'); a.href = URL.createObjectURL(b); a.download = 'hof-specs.png'; document.body.appendChild(a); a.click(); a.remove(); }
+
+// ---------- start ----------
+if (!ID) fail('CARD NOT FOUND', 'This link is missing its member code. Please use the link from your welcome message.');
+else hofApi('card', { id: ID }).then(d => {
+  CARD = d; $('msg').hidden = true; $('tabs').hidden = false;
+  TAB = location.hash === '#specs' ? 'specs' : 'card';
+  drawCard(); show();
+}).catch(e => fail(/recognised/.test(e.message) ? 'CARD NOT FOUND' : 'TRY AGAIN', /recognised/.test(e.message) ? 'We couldn\'t find this card. Please check with the HOF team.' : 'Couldn\'t load your card. Check your signal and refresh.'));
 </script>
 </body>
 </html>
