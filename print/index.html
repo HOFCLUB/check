@@ -19,6 +19,10 @@
   .row3{display:flex;gap:8px;margin-top:12px;flex-wrap:wrap}.row3>*{flex:1}
   .small{font-size:12px;color:var(--mute);margin-top:8px;line-height:1.5}
   .okmsg{color:#3DDC84;font-size:14px;margin-top:10px}
+  .imgs{display:grid;grid-template-columns:repeat(auto-fill,minmax(150px,1fr));gap:10px;margin-top:12px}
+  .imgs figure{margin:0;border:1px solid #2a2a2a;border-radius:10px;padding:8px;text-align:center}
+  .imgs img{width:100%;border-radius:6px;display:block}
+  .imgs figcaption{font-size:11px;color:var(--chrome);margin:6px 0}
   /* print sheet: credit-card size 85.6 x 54 mm with crop marks */
   .sheet{display:none}
   .cell{position:relative;width:85.6mm;height:54mm;margin:6mm}
@@ -89,24 +93,40 @@ function build(list) {
   return cards;
 }
 $('pr').onclick = () => { const l = sel(); if (!l.length) return; build(l); setTimeout(() => window.print(), 600); };
+// Phones and iPads only allow one download per tap, so the images are made first,
+// then shown here with a Save all button (share sheet) and a Save button for each one.
+let FILES = [];
 $('img').onclick = () => {
   const l = sel(); if (!l.length) return;
   $('out').innerHTML = '<p class="small">Making images...</p>';
   const go = () => {
     const box = document.createElement('div'); box.style.cssText = 'position:fixed;left:-9999px;top:0;width:1012px';
     document.body.appendChild(box);
+    FILES = [];
     let chain = Promise.resolve();
     l.forEach(p => {
       const c = hofCard({ type: p.type, first: p.first, num: p.num, photo: p.photo, founding: p.founding, role: p.role, rank: -1, id: p.id }, { print: true });
       [['front', c.front], ['back', c.back]].forEach(([side, html]) => chain = chain.then(() => {
         box.innerHTML = html;
         return html2canvas(box.firstElementChild, { backgroundColor: null, scale: 1, useCORS: true }).then(cv => new Promise(res => cv.toBlob(b => {
-          const a = document.createElement('a'); a.href = URL.createObjectURL(b); a.download = p.num + '-' + side + '.png'; a.click(); setTimeout(() => URL.revokeObjectURL(a.href), 4000); res();
+          FILES.push(new File([b], p.num + '-' + side + '.png', { type: 'image/png' })); res();
         }, 'image/png')));
       }));
     });
-    chain.then(() => { box.remove(); $('out').innerHTML = '<div class="okmsg">Saved ' + l.length * 2 + ' images (1012 × 638 px, 300 dpi at card size).</div>'; })
-      .catch(e => { box.remove(); $('out').innerHTML = '<p class="err">' + esc(e.message) + '</p>'; });
+    chain.then(() => {
+      box.remove();
+      const urls = FILES.map(f => URL.createObjectURL(f));
+      $('out').innerHTML = `<div class="okmsg">Made ${FILES.length} images (1012 × 638 px, 300 dpi at card size).</div>
+        <div class="row3"><button class="btn" id="saveAll">Save all ${FILES.length}</button></div>
+        <div class="imgs">${FILES.map((f, i) => `<figure><img src="${urls[i]}" alt="${esc(f.name)}"><figcaption>${esc(f.name)}</figcaption><button class="ghostbtn" data-i="${i}">Save</button></figure>`).join('')}</div>
+        <p class="small">On iPhone or iPad, Save all opens the share sheet: choose Save ${FILES.length} Images. You can also press and hold any card to save it.</p>`;
+      const one = i => { const a = document.createElement('a'); a.href = urls[i]; a.download = FILES[i].name; document.body.appendChild(a); a.click(); a.remove(); };
+      $('saveAll').onclick = () => {
+        if (navigator.canShare && navigator.canShare({ files: FILES })) navigator.share({ files: FILES, title: 'HOF cards' }).catch(() => {});
+        else FILES.forEach((f, i) => setTimeout(() => one(i), i * 400));
+      };
+      $('out').querySelectorAll('[data-i]').forEach(b => b.onclick = () => one(+b.dataset.i));
+    }).catch(e => { box.remove(); $('out').innerHTML = '<p class="err">' + esc(e.message) + '</p>'; });
   };
   if (window.html2canvas) go(); else { const s = document.createElement('script'); s.src = 'https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js'; s.onload = go; s.onerror = () => { $('out').innerHTML = '<p class="err">Image maker could not load. Use Print instead.</p>'; }; document.head.appendChild(s); }
 };
