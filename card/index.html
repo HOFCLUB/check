@@ -244,7 +244,7 @@ function drawShare() {
    <div class="lb t">BELIEVE · BEGIN · <span style="color:var(--red)">BURN</span> · BECOME</div>`;
   setFin(el, k); applyBg(el);
 }
-$('shareBtn').onclick = () => $('share').classList.toggle('open');
+$('shareBtn').onclick = () => $('share').classList.toggle('on');
 document.querySelectorAll('#fmt .tog').forEach(b => b.onclick = () => { OPT.f = b.dataset.f; document.querySelectorAll('#fmt .tog').forEach(x => x.classList.toggle('on', x === b)); drawShare(); });
 document.querySelectorAll('#togs .tog').forEach(b => b.onclick = () => { OPT[b.dataset.k] = OPT[b.dataset.k] ? 0 : 1; b.classList.toggle('on', !!OPT[b.dataset.k]); $('shNote').textContent = OPT.weight ? 'Weight is on for this image only.' : 'Weight is off unless you turn it on.'; drawShare(); });
 function shareBlob() { return html2canvas($('shimg'), { backgroundColor: '#000', scale: 3, useCORS: true }).then(c => new Promise(res => c.toBlob(res, 'image/png'))); }
