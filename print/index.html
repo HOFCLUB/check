@@ -72,7 +72,7 @@ if (!S || !S.exec) fail('EXECS ONLY', 'Sign in on the <a href="../team/" style="
 else hofApi('printList', { token: S.token }).then(d => {
   PEOPLE = d.people;
   $('msg').hidden = true; $('pick').hidden = false;
-  if (!PEOPLE.length) { $('people').innerHTML = '<p class="small">No one is ticked. Tick "Print card" on their row in the Register, then reload this page.</p>'; ['pr', 'img', 'done'].forEach(k => $(k).disabled = true); return; }
+  if (!PEOPLE.length) { $('people').innerHTML = '<p class="small">No one is ticked. Tick "Print card" on their row in the Register, then tap Check again.</p><div class="row3"><button class="btn" onclick="location.reload()">Check again</button></div>'; ['pr', 'img', 'done'].forEach(k => $(k).closest('.row3').hidden = true); document.querySelector('#pick > .small').hidden = true; return; }
   $('people').innerHTML = PEOPLE.map(p => `<label><input type="checkbox" data-id="${esc(p.id)}" checked><b>${esc(p.full)}</b><span>${esc(p.num)} · ${esc(p.type.toLowerCase())}</span></label>`).join('');
 }).catch(e => fail('COULD NOT LOAD', esc(e.message)));
 
