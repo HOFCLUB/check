@@ -26,7 +26,8 @@
   .st.ACTIVE{background:rgba(61,220,132,.15);color:#3DDC84}.st.PENDING{background:rgba(255,193,7,.15);color:#ffc107}.st.INACTIVE,.st.UNKNOWN{background:rgba(232,56,42,.15);color:#E8382A}
   .acts{display:grid;grid-template-columns:repeat(auto-fit,minmax(90px,1fr));gap:8px;margin-top:14px}
   .acts button{border:1px solid #3a3a3a;background:#141414;color:#fff;font:800 12px Montserrat,Arial,sans-serif;letter-spacing:.14em;padding:14px 8px;border-radius:12px;cursor:pointer}
-  .acts button.main{background:#fff;color:#0B0B0B;border-color:#fff}
+  .acts button.sel{background:#fff;color:#0B0B0B;border-color:#fff}
+  .acts button.busy{background:#2a2a2a;border-color:#fff}
   .acts button:disabled{opacity:.4}
   .okmsg{color:#3DDC84;font-size:14px;margin-top:10px}.warn{color:#ffc107;font-size:13px;margin-top:8px}
   .list{display:flex;flex-direction:column;gap:6px;margin-top:8px}
@@ -249,13 +250,21 @@ function person(id) {
       <span class="st ${esc(String(p.status).toUpperCase())}">${esc(p.status)}</span></div></div>
       ${p.today.length ? `<div class="okmsg">Already today: ${p.today.map(esc).join(', ')}</div>` : ''}
       ${p.profileIncomplete ? '<div class="warn">Profile not complete. Remind them to finish it from their card link.</div>' : ''}
-      ${active ? `<div class="acts"><button class="main" data-m="PRESENT">Present</button>${p.team ? '<button data-m="ON DUTY">On duty</button><button data-m="LEADING">Leading</button>' : ''}</div>` : '<div class="warn">Not active. Don\'t sign them in. Send them to the admin exec.</div>'}
+      ${active ? `<div class="acts"><button data-m="PRESENT">Present</button>${p.team ? '<button data-m="ON DUTY">On duty</button><button data-m="LEADING">Leading</button>' : ''}</div>` : '<div class="warn">Not active. Don\'t sign them in. Send them to the admin exec.</div>'}
       <div id="sdone"></div><div class="row3"><button class="ghostbtn" id="next">Next person</button></div>`;
-    f.querySelectorAll('[data-m]').forEach(b => b.onclick = () => {
-      f.querySelectorAll('[data-m]').forEach(x => x.disabled = true);
+    const btns = [...f.querySelectorAll('[data-m]')], lab = { PRESENT: 'Present', 'ON DUTY': 'On duty', LEADING: 'Leading' };
+    const mark = m => btns.forEach(x => { x.classList.remove('busy'); x.classList.toggle('sel', x.dataset.m === m); x.textContent = (x.dataset.m === m ? '✓ ' : '') + lab[x.dataset.m]; });
+    const already = btns.find(x => p.today.some(t => String(t).toUpperCase().indexOf(x.dataset.m) > -1)); if (already) mark(already.dataset.m);
+    btns.forEach(b => b.onclick = () => {
+      if (b.classList.contains('sel')) return;
+      btns.forEach(x => { x.disabled = true; x.classList.remove('sel'); x.textContent = lab[x.dataset.m]; });
+      b.classList.add('busy'); b.innerHTML = '<span class="spin"></span> Saving';
+      $('sdone').innerHTML = '';
       call('scan', { id, mode: b.dataset.m, session: val($('sess')) }).then(r => {
+        mark(b.dataset.m);
         $('sdone').innerHTML = `<div class="okmsg">${esc(r.first)} signed in: ${esc(r.mode.toLowerCase())} · ${esc(r.session.toLowerCase())}${r.result === 'UPDATED' ? ' (already signed in today, updated)' : ''}.</div>`;
-      }).catch(e => { $('sdone').innerHTML = '<p class="err">' + esc(e.message) + '</p>'; f.querySelectorAll('[data-m]').forEach(x => x.disabled = false); });
+      }).catch(e => { mark(''); $('sdone').innerHTML = '<p class="err">' + esc(e.message) + '</p>'; })
+        .finally(() => btns.forEach(x => x.disabled = false));
     });
     $('next').onclick = () => { f.hidden = true; $('camBtn').click(); };
   }).catch(e => { f.innerHTML = '<p class="err">' + esc(e.message) + '</p>'; });
